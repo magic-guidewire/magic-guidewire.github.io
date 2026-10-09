@@ -1,7 +1,13 @@
-﻿# MAGIC
+# MAGIC project page
 
-**Magnetic Actuation for Guidewire Intelligent Control**
+Static research page for **MAGIC — Magnetic Actuation for Guidewire Intelligent Control**.
 
-Project site: https://magic-guidewire.github.io
+Live site: https://magic-guidewire.github.io
 
-Source code: https://github.com/universeleaf/SOFA-magnetic-simulation
+Repository: https://github.com/magic-guidewire/magic-guidewire.github.io
+
+Local preview:
+
+```powershell
+python -m http.server 8765 --directory site
+```

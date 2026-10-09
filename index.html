@@ -1,61 +1,60 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MAGIC — Magnetic Actuation for Guidewire Intelligent Control</title>
-  <meta name="description" content="MAGIC 是磁驱动导丝智能控制的纯仿真研究：在恒速推进下，用局部信息学习外部磁场，减少磁头碰壁并降低壁面载荷。">
+  <meta name="description" content="MAGIC studies magnetic actuation for intelligent guidewire control in simulation: a local magnetic-field policy under constant proximal feed, with the aim of reducing magnetic-head wall contact and load.">
   <link rel="canonical" href="https://magic-guidewire.github.io/">
   <meta property="og:title" content="MAGIC — Magnetic Actuation for Guidewire Intelligent Control">
-  <meta property="og:description" content="恒速推进下的磁驱动导丝智能控制。V8 在两条开发血管上降低了磁头接触与局部载荷，全杆减载尚未达标。">
+  <meta property="og:description" content="Simulation study of magnetic guidewire control under constant proximal feed. V8 reduces magnetic-head contact and local load on two development vessels; whole-wire load reduction does not yet meet the pre-registered bar.">
   <meta property="og:url" content="https://magic-guidewire.github.io/">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,560&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%230c0c0c' width='32' height='32'/%3E%3Cpath d='M6 22c6-12 14-12 20 0' fill='none' stroke='%23e0b15a' stroke-width='2'/%3E%3C/svg%3E">
 </head>
 <body>
   <header class="nav">
     <a class="brand" href="#top">MAGIC</a>
     <ul>
-      <li><a href="#abstract">摘要</a></li>
-      <li><a href="#result">最新结果</a></li>
-      <li><a href="#geometry">几何</a></li>
-      <li><a href="#figures">已有图</a></li>
-      <li><a href="#method">方法</a></li>
-      <li><a href="#limits">边界</a></li>
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#result">Results</a></li>
+      <li><a href="#geometry">Geometry</a></li>
+      <li><a href="#figures">Figures</a></li>
+      <li><a href="#method">Method</a></li>
+      <li><a href="#limits">Limits</a></li>
     </ul>
   </header>
 
   <main id="top">
     <div class="wrap hero">
-      <p class="kicker">magic-guidewire.github.io · 核对于 2026-10-09</p>
+      <p class="kicker">magic-guidewire.github.io · checked 2026-10-09</p>
       <h1>MAGIC</h1>
       <p class="expansion">Magnetic Actuation for Guidewire Intelligent Control</p>
-      <p class="chinese-name">磁驱动导丝智能控制</p>
       <ul class="status">
-        <li><strong>纯仿真</strong> · 尚无实物标定</li>
-        <li>入口恒速 <strong>5 mm/s</strong></li>
-        <li>磁场幅值 <strong>20 mT</strong></li>
-        <li>V8：磁头避壁有改善，<strong>全杆减载未达标</strong></li>
+        <li><strong>Simulation only</strong> · no hardware calibration</li>
+        <li>Proximal feed <strong>5 mm/s</strong></li>
+        <li>Field amplitude <strong>20 mT</strong></li>
+        <li>V8: magnetic-head contact improved; <strong>whole-wire unloading unmet</strong></li>
       </ul>
-      <p class="lead">在完整血管仿真里持续送入导丝，只用外部磁场转动远端磁头。策略读局部血管信息，目标是少碰壁、降低壁面载荷，并保持通过时间。下面的数字都来自本仓库已经核对的配对实验，不是独立测试集上的泛化结论。</p>
+      <p class="lead">We insert a magnetic guidewire through a complete vessel in SOFA and learn an external magnetic field from local observations, with proximal insertion held at constant speed. The aim is less magnetic-head wall contact, lower wall load, and comparable transit time. The numbers below come from checked paired runs in this repository. They are not held-out test or multi-seed generalization results.</p>
     </div>
 
     <section id="abstract">
       <div class="wrap">
-        <p class="section-index">01 — 摘要</p>
-        <h2>恒速推进，局部磁场，整段血管。</h2>
+        <p class="section-index">01 — Abstract</p>
+        <h2>Constant feed, local magnetic field, full vessel.</h2>
         <div class="grid-2">
           <div>
-            <p>导丝为 121 个节点、400 mm 弹性杆。血管是约 270–299 mm、带大小弯的三维合成管腔，壁面用 SOFA 三角网格接触和摩擦，物理步长 6 ms。主实验把近端插入固定在 5 mm/s，学习动作只有三维磁场；另有 7.5 mm/s 的恒速对照，不把它算作学习收益。磁场变化率限制为 0.03 T/s。</p>
-            <p class="muted">当前默认模型没有被替换。V8 在两条开发血管上出现了磁头接触和磁头载荷的下降，同时通过时间基本不变；全杆载荷几乎没有下降，实际磁场变得更活跃。预先设定的综合门槛没有通过。</p>
+            <p>The wire is a 121-node, 400 mm elastic rod. The vessels are synthetic 3D lumens of about 270–299 mm with large and small bends, SOFA triangular wall contact and friction, and a 6 ms physics step. The main pairing keeps proximal insertion at 5 mm/s; the learned action is a 3D magnetic field only. A 7.5 mm/s constant-speed run is a speed control, not a learning gain. Field slew is limited to 0.03 T/s.</p>
+            <p class="muted">The default model was not replaced. On two development vessels, V8 reduced magnetic-head contact and magnetic-head load while transit time stayed essentially unchanged. Whole-wire load barely fell, and the realized field became more active. The pre-registered joint bar was not met.</p>
           </div>
           <div class="callout">
-            <h3>这页在比较什么</h3>
-            <p>同一条血管、同一执行器、入口同为 5 mm/s，学习后的策略相对训练前 warm 策略。负号表示该指标下降。接触和载荷下降是希望看到的方向；磁场变化率上升是控制代价。</p>
+            <h3>What this page compares</h3>
+            <p>Same vessel, same actuator, same 5 mm/s inlet: the learned policy versus the pre-training warm policy. Negative values mean the metric decreased. Lower contact and load are the intended direction; a higher field-rate cost is a control expense.</p>
           </div>
         </div>
       </div>
@@ -63,88 +62,88 @@
 
     <section id="result">
       <div class="wrap">
-        <p class="section-index">02 — 最新完整配对 · V8</p>
-        <h2>磁头轻了，整根杆几乎没轻。</h2>
-        <p>2026-10-09 完成 12000 次新增真实 SOFA 交互和两条开发血管的同速整段验证。两条都完整通过，18655 个物理步全部达到原严格收敛标准，全杆采样最大穿入为 0。这是采样审核，不是连续无穿入，也不是组织损伤证据。血管仍是刚性壁面。</p>
+        <p class="section-index">02 — Latest paired evaluation · V8</p>
+        <h2>The magnetic head is lighter. The whole wire is not.</h2>
+        <p>On 2026-10-09, 12,000 new real SOFA interactions and two same-speed full-route evaluations on development vessels finished. Both routes completed. All 18,655 physics steps met the original strict residual threshold. Whole-wire sampled penetration was 0. That is a sampled audit, not continuous non-penetration and not tissue-injury evidence. The walls remain rigid.</p>
 
         <div class="metrics">
           <div class="metric">
             <b class="down">−4.67% / −10.47%</b>
-            <span>磁头接触长度时间积分 · 开发 000 / 001</span>
+            <span>Magnetic-head contact length–time integral · development 000 / 001</span>
           </div>
           <div class="metric">
             <b class="down">−8.94% / −9.43%</b>
-            <span>磁头法向载荷平方积分</span>
+            <span>Magnetic-head normal-load squared integral</span>
           </div>
           <div class="metric">
             <b class="flat">−0.17% / −0.18%</b>
-            <span>全杆法向载荷平方积分 · 未达到 3% 门槛</span>
+            <span>Whole-wire normal-load squared integral · below the 3% bar</span>
           </div>
           <div class="metric">
             <b class="flat">−0.02% / +0.01%</b>
-            <span>物理通过时间 · 55.554 s / 56.376 s</span>
+            <span>Physical transit time · 55.554 s / 56.376 s</span>
           </div>
         </div>
 
         <div class="grid-2">
           <div>
-            <h3>相对训练前的变化</h3>
-            <p class="muted">横轴中线是 0。色条按 ±20% 画，方便看接触、载荷、时间和加速度。磁场变化率远超出这个量程，所以单独写在表里。</p>
-            <div class="bars" aria-label="开发血管 000 相对变化">
-              <div class="bar-row"><span>000 磁头接触</span><div class="axis"><i class="neg" style="right:50%;width:11.66%"></i></div><em>−4.67%</em></div>
-              <div class="bar-row"><span>001 磁头接触</span><div class="axis"><i class="neg" style="right:50%;width:26.17%"></i></div><em>−10.47%</em></div>
-              <div class="bar-row"><span>000 磁头载荷²</span><div class="axis"><i class="neg" style="right:50%;width:22.36%"></i></div><em>−8.94%</em></div>
-              <div class="bar-row"><span>001 磁头载荷²</span><div class="axis"><i class="neg" style="right:50%;width:23.57%"></i></div><em>−9.43%</em></div>
-              <div class="bar-row"><span>000 全杆载荷²</span><div class="axis"><i class="neg" style="right:50%;width:0.42%"></i></div><em>−0.17%</em></div>
-              <div class="bar-row"><span>001 全杆载荷²</span><div class="axis"><i class="neg" style="right:50%;width:0.46%"></i></div><em>−0.18%</em></div>
-              <div class="bar-row"><span>000 尖端加速度</span><div class="axis"><i class="neg" style="right:50%;width:28.62%"></i></div><em>−11.45%</em></div>
-              <div class="bar-row"><span>001 尖端加速度</span><div class="axis"><i class="neg" style="right:50%;width:40.73%"></i></div><em>−16.29%</em></div>
+            <h3>Change versus warm</h3>
+            <p class="muted">The axis midline is 0. Bars are drawn on a ±20% scale for contact, load, time, and acceleration. Field-rate changes exceed that range and are reported only in the table.</p>
+            <div class="bars" aria-label="Relative change on development vessels 000 and 001">
+              <div class="bar-row"><span>000 head contact</span><div class="axis"><i class="neg" style="right:50%;width:11.66%"></i></div><em>−4.67%</em></div>
+              <div class="bar-row"><span>001 head contact</span><div class="axis"><i class="neg" style="right:50%;width:26.17%"></i></div><em>−10.47%</em></div>
+              <div class="bar-row"><span>000 head load²</span><div class="axis"><i class="neg" style="right:50%;width:22.36%"></i></div><em>−8.94%</em></div>
+              <div class="bar-row"><span>001 head load²</span><div class="axis"><i class="neg" style="right:50%;width:23.57%"></i></div><em>−9.43%</em></div>
+              <div class="bar-row"><span>000 whole-wire load²</span><div class="axis"><i class="neg" style="right:50%;width:0.42%"></i></div><em>−0.17%</em></div>
+              <div class="bar-row"><span>001 whole-wire load²</span><div class="axis"><i class="neg" style="right:50%;width:0.46%"></i></div><em>−0.18%</em></div>
+              <div class="bar-row"><span>000 tip acceleration</span><div class="axis"><i class="neg" style="right:50%;width:28.62%"></i></div><em>−11.45%</em></div>
+              <div class="bar-row"><span>001 tip acceleration</span><div class="axis"><i class="neg" style="right:50%;width:40.73%"></i></div><em>−16.29%</em></div>
             </div>
           </div>
           <div class="callout">
-            <h3>为什么还不算达标</h3>
-            <p>预先要求两条血管的磁头接触积分都至少下降 5%，全杆载荷平方积分都至少下降 3%，并限制峰值和时间。开发 000 的磁头接触只降了 4.665%，两条全杆减载都只有约 0.2%。</p>
-            <p>因此 <em>qualified_improvement</em> 为否，默认模型保留，独立测试没有启动。代码里的 <em>new_learning_value</em> 只表示这两条开发配对上出现了方向性改善，不是统计显著性。</p>
+            <h3>Why this is not a passing result</h3>
+            <p>The pre-registered rule required at least a 5% drop in magnetic-head contact integral on both vessels, at least a 3% drop in whole-wire load squared integral, and limits on peak load and time. Vessel 000 head contact fell 4.665%, short of 5%. Whole-wire unloading was about 0.2% on both routes.</p>
+            <p>So <em>qualified_improvement</em> is false, the default model stays, and independent tests were not launched. The code flag <em>new_learning_value</em> only marks a directional gain on these two development pairings. It is not statistical significance.</p>
           </div>
         </div>
 
         <table>
           <thead>
-            <tr><th>指标</th><th>开发 000</th><th>开发 001</th></tr>
+            <tr><th>Metric</th><th>Dev. 000</th><th>Dev. 001</th></tr>
           </thead>
           <tbody>
-            <tr><td>完整通过与全杆采样审核</td><td>通过</td><td>通过</td></tr>
-            <tr><td>磁头接触积分</td><td>−4.665%</td><td>−10.468%</td></tr>
-            <tr><td>磁头法向载荷平方积分</td><td>−8.943%</td><td>−9.429%</td></tr>
-            <tr><td>磁头平均法向载荷</td><td>−5.930%</td><td>−5.364%</td></tr>
-            <tr><td>磁头总法向载荷峰值</td><td>+0.539%</td><td>−4.805%</td></tr>
-            <tr><td>全杆法向载荷平方积分</td><td>−0.166%</td><td>−0.182%</td></tr>
-            <tr><td>全杆总法向载荷峰值</td><td>−0.006%</td><td>−0.087%</td></tr>
-            <tr><td>物理通过时间</td><td>−0.022%</td><td>+0.011%</td></tr>
-            <tr><td>尖端平均速度</td><td>−0.813%</td><td>−1.107%</td></tr>
-            <tr><td>尖端速度标准差</td><td>−0.149%</td><td>+3.821%</td></tr>
-            <tr><td>尖端加速度平方积分 / 秒</td><td>−11.449%</td><td>−16.291%</td></tr>
-            <tr><td>实际磁场变化率平方积分 / 秒</td><td>+251.0%</td><td>+290.0%</td></tr>
+            <tr><td>Full completion and whole-wire sampled audit</td><td>Pass</td><td>Pass</td></tr>
+            <tr><td>Magnetic-head contact integral</td><td>−4.665%</td><td>−10.468%</td></tr>
+            <tr><td>Magnetic-head normal-load squared integral</td><td>−8.943%</td><td>−9.429%</td></tr>
+            <tr><td>Magnetic-head mean normal load</td><td>−5.930%</td><td>−5.364%</td></tr>
+            <tr><td>Magnetic-head total normal-load peak</td><td>+0.539%</td><td>−4.805%</td></tr>
+            <tr><td>Whole-wire normal-load squared integral</td><td>−0.166%</td><td>−0.182%</td></tr>
+            <tr><td>Whole-wire total normal-load peak</td><td>−0.006%</td><td>−0.087%</td></tr>
+            <tr><td>Physical transit time</td><td>−0.022%</td><td>+0.011%</td></tr>
+            <tr><td>Tip mean speed</td><td>−0.813%</td><td>−1.107%</td></tr>
+            <tr><td>Tip speed standard deviation</td><td>−0.149%</td><td>+3.821%</td></tr>
+            <tr><td>Tip acceleration squared integral / s</td><td>−11.449%</td><td>−16.291%</td></tr>
+            <tr><td>Realized field-rate squared integral / s</td><td>+251.0%</td><td>+290.0%</td></tr>
           </tbody>
         </table>
-        <p class="muted">磁头接触积分从 215.542 / 231.711 mm·s 降到 205.486 / 207.456 mm·s。磁头平均法向载荷从 15.796 / 13.875 mN 降到 14.859 / 13.131 mN。全杆载荷平方积分仍为 116.238 / 49.680 N²s，峰值 4.412 / 2.323 N。这里的总载荷是各接触法向力之和，峰值不是单个接触的组织压力，N²s 也不是机械功。</p>
-        <p class="muted">尖端进度超过 200 mm 之后，贡献了训练前全杆载荷平方积分的 97.2% / 88.0%。磁头法向冲量只占全杆法向冲量的约 1.76%–2.28%。局部磁头改善会被后段杆身接触稀释。近端 5 mm/s 命令的最大误差为 4.7×10⁻¹² mm/s。</p>
+        <p class="muted">Magnetic-head contact integrals fell from 215.542 / 231.711 mm·s to 205.486 / 207.456 mm·s. Mean magnetic-head normal load fell from 15.796 / 13.875 mN to 14.859 / 13.131 mN. Whole-wire squared integrals remain 116.238 / 49.680 N²s, with peaks 4.412 / 2.323 N. “Total load” is the sum of contact normal forces. The peak is not a single-contact tissue pressure, and N²s is not mechanical work.</p>
+        <p class="muted">After tip progress exceeds 200 mm, that interval accounts for 97.2% / 88.0% of the warm whole-wire load squared integral. Magnetic-head normal impulse is only about 1.76%–2.28% of whole-wire normal impulse. Local head gains are diluted by later shaft contact. Maximum proximal 5 mm/s command error is 4.7×10⁻¹² mm/s.</p>
       </div>
     </section>
 
     <section id="geometry">
       <div class="wrap">
-        <p class="section-index">03 — 基准几何</p>
-        <h2>一条能走完的理想管腔。</h2>
-        <p>主基准长约 295 mm，管腔直径 6 mm：入口直道、R50 mm 的 90° 大弯、中间直道、R18 mm 的反向 90° 小弯，再接到出口。它是刚性理想几何，不是患者血管。图本身是中心线预览，不是一次仿真轨迹。</p>
+        <p class="section-index">03 — Benchmark geometry</p>
+        <h2>An idealized lumen that can be completed.</h2>
+        <p>The main benchmark is about 295 mm long with a 6 mm lumen diameter: an inlet straight, a 90° R50 mm bend, a mid straight, a reverse 90° R18 mm bend, then the outlet. It is a rigid ideal geometry, not a patient vessel. The drawings are centerline previews, not simulation trajectories.</p>
         <div class="grid-2">
           <figure class="figure">
-            <img src="figures/vessel_295.svg" alt="295 mm 基准血管中心线，标出入口、R50 大弯、R18 小弯和出口">
-            <figcaption><strong>图 1.</strong> 1 mm 级壁面离散所用的 295 mm 基准。入口持续送入，出口在上方。预览不是仿真结果。</figcaption>
+            <img src="figures/vessel_295.svg" alt="295 mm benchmark centerline with inlet, R50 bend, R18 bend, and outlet labeled">
+            <figcaption><strong>Figure 1.</strong> 295 mm benchmark used with 1 mm-scale wall discretization. Proximal feed at the inlet; outlet at the top. This preview is not a simulation result.</figcaption>
           </figure>
           <figure class="figure">
-            <img src="figures/vessel_295_2mm.svg" alt="同一 295 mm 路线的 2 mm 壁面离散预览">
-            <figcaption><strong>图 2.</strong> 同一路线的 2 mm 壁面离散对照。默认学习使用更密的 1 mm 网格；两种网格都只代表这条理想管腔。</figcaption>
+            <img src="figures/vessel_295_2mm.svg" alt="Same 295 mm route preview with 2 mm wall discretization">
+            <figcaption><strong>Figure 2.</strong> Same route with 2 mm wall discretization. Default learning uses the denser 1 mm mesh. Both meshes represent this ideal lumen only.</figcaption>
           </figure>
         </div>
       </div>
@@ -152,62 +151,62 @@
 
     <section id="figures">
       <div class="wrap">
-        <p class="section-index">04 — 仓库里已有的结果图</p>
-        <h2>早期学习试运行，还不是 V8。</h2>
-        <p>下面三张图是更早的单路线试运行，每张策略只走了一条确定轨迹。它们说明管线能完成整段，并比较接触、加速度和训练进度。不能把它们读成 V8 的磁头减载，也不能当成多种子或未训练血管上的结论。</p>
+        <p class="section-index">04 — Existing result figures</p>
+        <h2>Early learning pilots, not V8.</h2>
+        <p>The three figures below are earlier single-route pilots. Each policy ran one deterministic trajectory. They show that the pipeline can finish the route and compare contact, acceleration, and training progress. They are not V8 magnetic-head unloading, and they are not multi-seed or untrained-vessel conclusions.</p>
 
         <figure class="figure">
-          <img src="figures/learning_effect_v1.svg" alt="专家、行为克隆、PPO、CUDA 微调和随机策略在接触、平滑性、控制代价和进度上的对比">
-          <figcaption><strong>图 3.</strong> 先导学习效果。专家、行为克隆、PPO、CUDA 微调与随机动作都能完成该路线。PPO 的接触代理略低于专家，运动平滑性尚未一起改善。接触是间隙代理，不是组织压力。一条确定路线，每个策略一次滚动。</figcaption>
+          <img src="figures/learning_effect_v1.svg" alt="Expert, behavior cloning, PPO, CUDA refinement, and random policies compared on contact, smoothness, control effort, and progress">
+          <figcaption><strong>Figure 3.</strong> Pilot learning effect. Expert, behavior cloning, PPO, CUDA refinement, and random actions all complete this route. PPO contact is slightly below expert; motion smoothness does not improve with it. Contact is a clearance proxy, not tissue pressure. One deterministic route, one rollout per policy.</figcaption>
         </figure>
 
         <figure class="figure">
-          <img src="figures/refinement_comparison.svg" alt="专家、先导 PPO、PPO v1 和 PPO v2 的接触时间、加速度、仿真时间和磁场变化">
-          <figcaption><strong>图 4.</strong> 细化对照。v2 相对 v1 有改进，接触持续时间和加速度仍高于专家。描述性单路线比较；重复使用的专家轨迹不是独立样本。</figcaption>
+          <img src="figures/refinement_comparison.svg" alt="Expert, pilot PPO, PPO v1, and PPO v2 compared on contact duration, acceleration, simulation time, and field change">
+          <figcaption><strong>Figure 4.</strong> Refinement comparison. v2 improves on v1, but contact duration and acceleration still exceed expert. Descriptive single-route comparison; the reused expert trajectory is not an independent sample.</figcaption>
         </figure>
 
         <figure class="figure">
-          <img src="figures/cuda_refinement_progress_v1.svg" alt="CUDA 微调的检查点数量和当前运行进度">
-          <figcaption><strong>图 5.</strong> 一次 CUDA 微调的进度。记录为 8192 个请求步全部优化、160 次更新、32 个检查点。这张图表示那次运行走完了，不表示控制已经更好。</figcaption>
+          <img src="figures/cuda_refinement_progress_v1.svg" alt="CUDA refinement checkpoint count and current run progress">
+          <figcaption><strong>Figure 5.</strong> One CUDA refinement run. 8,192 requested steps were all optimized, with 160 updates and 32 checkpoints. The figure records that the run finished. It does not mean control improved.</figcaption>
         </figure>
       </div>
     </section>
 
     <section id="method">
       <div class="wrap">
-        <p class="section-index">05 — 方法与此前轮次</p>
-        <h2>先把物理和记账对齐，再谈学习。</h2>
+        <p class="section-index">05 — Method and earlier rounds</p>
+        <h2>Align physics and accounting before claiming learning.</h2>
         <div class="steps">
           <div class="step">
-            <b>01 场景</b>
-            <p>SOFA 弹性杆、完整三角壁、摩擦。关闭磁梯度牵引和求解后的位置修正。磁头按实际磁性段计量，不再把杆身贴壁长度写进惩罚。</p>
+            <b>01 Scene</b>
+            <p>SOFA elastic rod, complete triangular wall, friction. Magnetic gradient traction and post-solve position correction are off. The magnetic head is measured from the actual magnetic segment. Shaft wall-contact length is no longer a penalty.</p>
           </div>
           <div class="step">
-            <b>02 动作</b>
-            <p>演员只看局部信息和已知的恒速推进，输出磁场残差。幅值 20 mT，变化率 0.03 T/s，残差幅度 0.2。价值网络在训练时可以读更多杆身和力。</p>
+            <b>02 Action</b>
+            <p>The actor sees local information and the known constant feed, and outputs a magnetic-field residual. Amplitude 20 mT, slew 0.03 T/s, residual scale 0.2. The critic may read more of the shaft and forces during training.</p>
           </div>
           <div class="step">
-            <b>03 学习</b>
-            <p>先更新价值网络，出现足够的真实成功回合后再更新策略。V8 使用 12000 次新交互、3920 次更新，实际访问 32 条训练池中的 12 条。</p>
+            <b>03 Learning</b>
+            <p>The value network is updated first. Policy updates start after enough real successful episodes. V8 used 12,000 new interactions and 3,920 updates, and actually visited 12 of 32 training-pool vessels.</p>
           </div>
           <div class="step">
-            <b>04 验收</b>
-            <p>两条开发血管整段通过、逐步收敛、力与目标可复算，才进入比较。没过预设门槛就不换默认模型。</p>
+            <b>04 Acceptance</b>
+            <p>Comparison starts only after both development vessels complete, every physics step converges, and force and objective terms recompute. The default model is not replaced if the pre-registered bar is missed.</p>
           </div>
         </div>
 
         <div class="grid-3" style="margin-top:22px">
           <article class="card">
-            <h3>求解时间</h3>
-            <p>同一条约 285 mm 通路上，严格精度保护把完整仿真从大约 52 分钟降到 14–15 分钟。两条通路合计 18653 个物理步都达到原残差阈值。不同机器负载下的耗时比，还不能单独写成受控加速结论。</p>
+            <h3>Solver time</h3>
+            <p>On the same ~285 mm routes, a strict residual-preserving solver cut complete simulations from about 52 minutes to 14–15 minutes. The two routes total 18,653 physics steps, all at the original residual threshold. Wall-clock ratios under different machine load are not a controlled speedup result by themselves.</p>
           </article>
           <article class="card">
-            <h3>更早的先导</h3>
-            <p>恒速磁场先导在两条血管上把全杆接触积分降低约 2.19% / 2.77%，速度基本保持，平滑性并不一致，磁场变化也更频繁。这是一个训练种子的先导，不是最终结果。</p>
+            <h3>Earlier pilot</h3>
+            <p>A constant-field pilot reduced whole-wire contact integrals by about 2.19% / 2.77% on two vessels. Speed was roughly held. Smoothness was not consistent, and the field changed more often. That was a single training seed, not a final result.</p>
           </article>
           <article class="card">
-            <h3>V5 没有改善接触</h3>
-            <p>目标记账修正之后，同预算学习相对训练前的全杆接触是 +1.58% / +1.36%，加速度指标 +10.08% / +3.69%。磁场更平滑没有带来更少的贴壁。该轮同样没有替换默认模型。</p>
+            <h3>V5 did not reduce contact</h3>
+            <p>After objective-accounting repairs, same-budget learning versus warm was +1.58% / +1.36% whole-wire contact and +10.08% / +3.69% acceleration. A smoother field did not mean less wall contact. That round also did not replace the default model.</p>
           </article>
         </div>
       </div>
@@ -215,15 +214,15 @@
 
     <section id="limits">
       <div class="wrap">
-        <p class="section-index">06 — 现在还不能说的话</p>
-        <h2>改善停在两条开发血管的磁头上。</h2>
+        <p class="section-index">06 — What this does not show</p>
+        <h2>The gain stops at the magnetic head on two development vessels.</h2>
         <ul class="clean">
-          <li>两条开发血管此前反复用于诊断，本轮是单个训练种子。没有独立测试，没有多种子，不能写泛化。</li>
-          <li>全杆载荷没有达到预先要求的下降。研究目标还没有完成。</li>
-          <li>加速度指标下降，同时实际磁场变化率大约增加到 3.5–3.9 倍。不能说所有平滑性都改善了。</li>
-          <li>7.5 mm/s 只是速度对照。那次通过时间更短，但壁面载荷平方和峰值更高，不能当成学到了更快更安全的策略。</li>
-          <li>材料、磁化强度和线圈都没有实物标定。通过仿真管腔不等于临床安全，也不能说明磁场是通关的必要条件：零场在无分叉管腔里仍可能被管壁导向前进。</li>
-          <li>把 SOFA 和标准强化学习接在一起，并不是这项工作相对已有磁连续体仿真和导丝导航研究的贡献。</li>
+          <li>Both development vessels were used repeatedly for diagnosis. This round is a single training seed. There is no independent test set and no multi-seed result, so no generalization claim.</li>
+          <li>Whole-wire load did not meet the pre-registered drop. The research objective is not complete.</li>
+          <li>The acceleration metric fell, while realized field-rate cost rose to about 3.5–3.9×. Not every smoothness measure improved.</li>
+          <li>7.5 mm/s is a speed control. Transit time was shorter, but wall-load energy and peaks were higher. That is not a learned faster-and-safer policy.</li>
+          <li>Materials, magnetization, and coils are uncalibrated. Completing a simulated lumen is not clinical safety, and a magnetic field is not required to finish: a zero-field wire can still be passively guided in an unbranched lumen.</li>
+          <li>Connecting SOFA to standard reinforcement learning is not, by itself, a contribution relative to existing magnetic continuum simulation and guidewire navigation work.</li>
         </ul>
       </div>
     </section>
@@ -231,8 +230,8 @@
 
   <footer>
     <div class="wrap">
-      <p>项目页：<a href="https://magic-guidewire.github.io">magic-guidewire.github.io</a>。数字与图来自 2026-10-09 的核对记录，原始配对在 <code>results/magic_head_force_study_v8_20261009</code>。代码仓库：<a href="https://github.com/universeleaf/SOFA-magnetic-simulation">universeleaf/SOFA-magnetic-simulation</a>。</p>
-      <p>页面结构参考公开的研究项目站：标题、摘要、结果、图注和限制分节。图 1–2 是几何预览，图 3–5 是早期试运行，与 V8 表格不是同一次实验。</p>
+      <p>Project page: <a href="https://magic-guidewire.github.io">magic-guidewire.github.io</a>. Numbers and figures are from the 2026-10-09 checked record. Raw pairings live in <code>results/magic_head_force_study_v8_20261009</code>. Code: <a href="https://github.com/universeleaf/SOFA-magnetic-simulation">universeleaf/SOFA-magnetic-simulation</a>.</p>
+      <p>Page structure follows public research project sites: title, abstract, results, captions, and limits. Figures 1–2 are geometry previews. Figures 3–5 are earlier pilots, not the same experiment as the V8 table.</p>
     </div>
   </footer>
 </body>
