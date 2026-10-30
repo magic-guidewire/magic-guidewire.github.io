@@ -32,14 +32,14 @@
 
   <main id="top">
     <div class="wrap hero">
-      <p class="kicker">magic-guidewire.github.io · synced from the experiment records · 2026-10-30 13:21 UTC</p>
+      <p class="kicker">magic-guidewire.github.io · synced from the experiment records · 2026-10-30 14:22 UTC</p>
       <h1>MAGIC</h1>
       <p class="expansion">Magnetic Actuation for Guidewire Intelligent Control</p>
       <ul class="status">
         <li><strong>Simulation only</strong> · rigid walls, uncalibrated damping</li>
         <li>Proximal feed <strong>≤ 5 mm/s</strong> · slow-down only</li>
         <li>Field <strong>≤ 20 mT</strong> · 0.03 T/s</li>
-        <li>Now: <strong>M3c · rate-limited relative-load feed</strong></li>
+        <li>Now: <strong>M3d · time-matched objective</strong></li>
       </ul>
       <p class="lead">We push a 400 mm magnetic guidewire through complete 3D lumens in SOFA. A fixed geometric steering controller (V28) points the magnetic head with an external field. On top of it we learn a low-dimensional policy that may only <em>slow</em> the proximal feed and retune the steering gains. The aim is a smooth, unobstructed passage: fewer head–wall collisions, lower head contact force and steadier tip motion, in a reasonable time. Numbers on this page come from checked full-passage runs; unless stated they are training or development results, not a held-out test.</p>
     </div>
@@ -50,8 +50,8 @@
         <h2>What is running now.</h2>
         <div class="grid-2">
           <div>
-            <p><strong>M3c · rate-limited relative-load feed</strong> <span class="muted">(m3c_smoothrel_learning_20261029a)</span> — state <em>running</em>, stage <em>checkpoint_009</em>.</p>
-            <p>Full passages in this experiment: <strong>218</strong> finished, <strong>0</strong> failed, <strong>6</strong> running (six run in parallel on CPU). Policy evaluations scored: <strong>9</strong>.</p>
+            <p><strong>M3d · time-matched objective</strong> <span class="muted">(m3d_timematched_learning_20261030a)</span> — state <em>running</em>, stage <em>bayesian_policy_search</em>.</p>
+            <p>Full passages in this experiment: <strong>0</strong> finished, <strong>0</strong> failed, <strong>6</strong> running (six run in parallel on CPU). Policy evaluations scored: <strong>0</strong>.</p>
             <p class="muted">Best design meeting every hard constraint so far: <strong>eval002</strong>. Against same-speed V28 on the 32 training vessels: head ∫F²ds −10.6% (worst vessel −0.8%), tip acceleration −12.2%, mean time +0.22%, tip-speed std +118%.</p>
             <p class="muted">Adopted controller (passed its development gate and an independent raw audit): <strong>A8 eval005</strong>. Interrupted runs (machine restarts, app updates) are archived untouched and re-run from scratch; they are never counted.</p>
           </div>
@@ -221,7 +221,7 @@
         <div class="grid-3">
           <article class="card"><h3>M3 · absolute load feedback</h3><p>Slow down when filtered head load exceeds a fixed 8 mN reference. On the 24 new, low-load vessels the feed saturated at 5 mm/s: time −28 … −33%, head ∫F²ds +53 … +144%. A fixed reference cannot fit vessels of different load levels. Stopped.</p></article>
           <article class="card"><h3>M3b · relative load feedback</h3><p>Compare fast and slow low-passes of the same vessel's head load: slow down above the vessel's own recent level, catch up below it. Head ∫F²ds −19 … −20% on every vessel at equal mean time, but the feed changed too abruptly: worst-vessel tip acceleration +56 … +80%. Stopped.</p></article>
-          <article class="card"><h3>M3c · rate-limited</h3><p>Same law with a limit on how fast the feed may change, and smoothness in the objective. First design meeting every constraint: eval002, head ∫F²ds −10.6%, tip acceleration −12.2%, mean time +0.22%. Its tip-speed std rose +118% — the feed is deliberately non-uniform.</p></article>
+          <article class="card"><h3>M3c · rate-limited</h3><p>Same law with a limit on how fast the feed may change, and smoothness in the objective. First design meeting every constraint: eval002, head ∫F²ds −10.6%, tip acceleration −12.2%, mean time +0.22%. Its tip-speed std rose +118% — the feed is deliberately non-uniform. On the 6 development vessels (not used for selection) eval002 succeeded 6/6 with no significant collision and cut head ∫F²ds on every vessel against same-speed V28 (−9 … −19%), but it was also 4 … 7% slower there, so this is not yet an equal-time win. Stopped in favour of M3d.</p></article>
         </div>
         <div class="grid-2" style="margin-top:18px">
           <figure class="chart">
@@ -283,7 +283,7 @@
           </figure>
           <div class="callout">
             <h3>Next: time-matched scoring (M3d)</h3>
-            <p>Small time differences blur the comparison, because force falls steeply with time. Re-scoring every M3c design against a per-vessel uniform baseline interpolated to the policy's own passage time gives an equal-time gain of about −8 … −11% in head ∫F²ds and −4 … −9% in tip acceleration. That is close to, but not yet reliably above, the 10% bar, and every design still has a vessel where force does not fall. M3d searches on this time-matched objective with a stronger penalty on speed fluctuation; it starts after M3c's development checkpoint.</p>
+            <p>Small time differences blur the comparison, because force falls steeply with time. Re-scoring every M3c design against a per-vessel uniform baseline interpolated to the policy's own passage time gives an equal-time gain of about −8 … −11% in head ∫F²ds and −4 … −9% in tip acceleration. That is close to, but not yet reliably above, the 10% bar, and every design still has a vessel where force does not fall. M3d searches on this time-matched objective with a stronger penalty on speed fluctuation; it has been running since 30 Oct, warm-started from the nine re-scored M3c designs (four meet its constraints).</p>
           </div>
         </div>
       </div>
