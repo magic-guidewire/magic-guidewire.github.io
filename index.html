@@ -4,26 +4,27 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>MAGIC — Magnetic Actuation for Guidewire Intelligent Control</title>
-  <meta name="description" content="MAGIC studies magnetic actuation for intelligent guidewire control in simulation: a local magnetic-field policy under constant proximal feed, with the aim of reducing magnetic-head wall contact and load.">
+  <meta name="description" content="Simulation study of magnetic guidewire navigation in SOFA: a learned, slow-down-only feed policy on top of a geometric magnetic-steering controller, evaluated on unseen synthetic and patient-derived vessels.">
   <link rel="canonical" href="https://magic-guidewire.github.io/">
   <meta property="og:title" content="MAGIC — Magnetic Actuation for Guidewire Intelligent Control">
-  <meta property="og:description" content="Simulation study of magnetic guidewire control under constant proximal feed. V8 reduces magnetic-head contact and local load on two development vessels; whole-wire load reduction does not yet meet the pre-registered bar.">
+  <meta property="og:description" content="Current status: the gains so far come from a uniform slow-down (head force −59% on 48 unseen vessels at 1.5× time); learning an equal-time feed schedule is in progress.">
   <meta property="og:url" content="https://magic-guidewire.github.io/">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,560&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%230c0c0c' width='32' height='32'/%3E%3Cpath d='M6 22c6-12 14-12 20 0' fill='none' stroke='%23e0b15a' stroke-width='2'/%3E%3C/svg%3E">
 </head>
 <body>
   <header class="nav">
     <a class="brand" href="#top">MAGIC</a>
     <ul>
-      <li><a href="#abstract">Abstract</a></li>
-      <li><a href="#result">Results</a></li>
-      <li><a href="#geometry">Geometry</a></li>
-      <li><a href="#figures">Figures</a></li>
+      <li><a href="#status">Status</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#generalization">Generalization</a></li>
+      <li><a href="#anatomy">Patient-derived</a></li>
+      <li><a href="#current">Current work</a></li>
       <li><a href="#method">Method</a></li>
       <li><a href="#limits">Limits</a></li>
     </ul>
@@ -31,210 +32,277 @@
 
   <main id="top">
     <div class="wrap hero">
-      <p class="kicker">magic-guidewire.github.io · checked 2026-10-09</p>
+      <p class="kicker">magic-guidewire.github.io · synced from the experiment records · 2026-10-30 07:09 UTC</p>
       <h1>MAGIC</h1>
       <p class="expansion">Magnetic Actuation for Guidewire Intelligent Control</p>
       <ul class="status">
-        <li><strong>Simulation only</strong> · no hardware calibration</li>
-        <li>Proximal feed <strong>5 mm/s</strong></li>
-        <li>Field amplitude <strong>20 mT</strong></li>
-        <li>V8: magnetic-head contact improved; <strong>whole-wire unloading unmet</strong></li>
+        <li><strong>Simulation only</strong> · rigid walls, uncalibrated damping</li>
+        <li>Proximal feed <strong>≤ 5 mm/s</strong> · slow-down only</li>
+        <li>Field <strong>≤ 20 mT</strong> · 0.03 T/s</li>
+        <li>Now: <strong>M3c · rate-limited relative-load feed</strong></li>
       </ul>
-      <p class="lead">We insert a magnetic guidewire through a complete vessel in SOFA and learn an external magnetic field from local observations, with proximal insertion held at constant speed. The aim is less magnetic-head wall contact, lower wall load, and comparable transit time. The numbers below come from checked paired runs in this repository. They are not held-out test or multi-seed generalization results.</p>
+      <p class="lead">We push a 400 mm magnetic guidewire through complete 3D lumens in SOFA. A fixed geometric steering controller (V28) points the magnetic head with an external field. On top of it we learn a low-dimensional policy that may only <em>slow</em> the proximal feed and retune the steering gains. The aim is a smooth, unobstructed passage: fewer head–wall collisions, lower head contact force and steadier tip motion, in a reasonable time. Numbers on this page come from checked full-passage runs; unless stated they are training or development results, not a held-out test.</p>
     </div>
 
-    <section id="abstract">
+    <section id="status">
       <div class="wrap">
-        <p class="section-index">01 — Abstract</p>
-        <h2>Constant feed, local magnetic field, full vessel.</h2>
+        <p class="section-index">01 — Live status</p>
+        <h2>What is running now.</h2>
         <div class="grid-2">
           <div>
-            <p>The wire is a 121-node, 400 mm elastic rod. The vessels are synthetic 3D lumens of about 270–299 mm with large and small bends, SOFA triangular wall contact and friction, and a 6 ms physics step. The main pairing keeps proximal insertion at 5 mm/s; the learned action is a 3D magnetic field only. A 7.5 mm/s constant-speed run is a speed control, not a learning gain. Field slew is limited to 0.03 T/s.</p>
-            <p class="muted">The default model was not replaced. On two development vessels, V8 reduced magnetic-head contact and magnetic-head load while transit time stayed essentially unchanged. Whole-wire load barely fell, and the realized field became more active. The pre-registered joint bar was not met.</p>
+            <p><strong>M3c · rate-limited relative-load feed</strong> <span class="muted">(m3c_smoothrel_learning_20261029a)</span> — state <em>running</em>, stage <em>bayesian_policy_search</em>.</p>
+            <p>Full passages in this experiment: <strong>176</strong> finished, <strong>0</strong> failed, <strong>6</strong> running (six run in parallel on CPU). Policy evaluations scored: <strong>6</strong>.</p>
+            <p class="muted">Best design meeting every hard constraint so far: <strong>eval002</strong>. Against same-speed V28 on the 32 training vessels: head ∫F²ds −10.6% (worst vessel −0.8%), tip acceleration −12.2%, mean time +0.22%, tip-speed std +118%.</p>
+            <p class="muted">Adopted controller (passed its development gate and an independent raw audit): <strong>A8 eval005</strong>. Interrupted runs (machine restarts, app updates) are archived untouched and re-run from scratch; they are never counted.</p>
           </div>
           <div class="callout">
-            <h3>What this page compares</h3>
-            <p>Same vessel, same actuator, same 5 mm/s inlet: the learned policy versus the pre-training warm policy. Negative values mean the metric decreased. Lower contact and load are the intended direction; a higher field-rate cost is a control expense.</p>
+            <h3>Roadmap</h3>
+            <table class="roadmap"><tbody><tr><td>M1</td><td>Same-speed control</td><td><span class="state done">✓ done</span></td><td class="left">2026-10-28 · learned gains add no measurable benefit at equal feed</td></tr><tr><td>M2</td><td>Generalization: 48 unseen synthetic + 13 patient-derived routes</td><td><span class="state done">✓ done</span></td><td class="left">2026-10-28 · slow-down gain holds on 48/48 synthetic vessels</td></tr><tr><td>M3</td><td>Equal-time feed learning on 32 training vessels</td><td><span class="state running">● running</span></td><td class="left">beat uniform slow-down at the same passage time</td></tr><tr><td>M4</td><td>Ablations</td><td><span class="state planned">planned</span></td><td class="left">feed only · steering only · no look-ahead · no collision constraint</td></tr><tr><td>M5</td><td>Physics robustness</td><td><span class="state planned">planned</span></td><td class="left">friction, stiffness and field limit ±20%</td></tr><tr><td>M6</td><td>Held-out test, run once</td><td><span class="state planned">planned</span></td><td class="left">new seed, method frozen first</td></tr><tr><td>M7</td><td>Paper assets</td><td><span class="state planned">planned</span></td><td class="left">figures, trajectories, videos</td></tr></tbody></table>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="result">
+    <section id="findings">
       <div class="wrap">
-        <p class="section-index">02 — Latest paired evaluation · V8</p>
-        <h2>The magnetic head is lighter. The whole wire is not.</h2>
-        <p>On 2026-10-09, 12,000 new real SOFA interactions and two same-speed full-route evaluations on development vessels finished. Both routes completed. All 18,655 physics steps met the original strict residual threshold. Whole-wire sampled penetration was 0. That is a sampled audit, not continuous non-penetration and not tissue-injury evidence. The walls remain rigid.</p>
-
-        <div class="metrics">
-          <div class="metric">
-            <b class="down">−4.67% / −10.47%</b>
-            <span>Magnetic-head contact length–time integral · development 000 / 001</span>
-          </div>
-          <div class="metric">
-            <b class="down">−8.94% / −9.43%</b>
-            <span>Magnetic-head normal-load squared integral</span>
-          </div>
-          <div class="metric">
-            <b class="flat">−0.17% / −0.18%</b>
-            <span>Whole-wire normal-load squared integral · below the 3% bar</span>
-          </div>
-          <div class="metric">
-            <b class="flat">−0.02% / +0.01%</b>
-            <span>Physical transit time · 55.554 s / 56.376 s</span>
-          </div>
-        </div>
-
-        <div class="grid-2">
-          <div>
-            <h3>Change versus warm</h3>
-            <p class="muted">The axis midline is 0. Bars are drawn on a ±20% scale for contact, load, time, and acceleration. Field-rate changes exceed that range and are reported only in the table.</p>
-            <div class="bars" aria-label="Relative change on development vessels 000 and 001">
-              <div class="bar-row"><span>000 head contact</span><div class="axis"><i class="neg" style="right:50%;width:11.66%"></i></div><em>−4.67%</em></div>
-              <div class="bar-row"><span>001 head contact</span><div class="axis"><i class="neg" style="right:50%;width:26.17%"></i></div><em>−10.47%</em></div>
-              <div class="bar-row"><span>000 head load²</span><div class="axis"><i class="neg" style="right:50%;width:22.36%"></i></div><em>−8.94%</em></div>
-              <div class="bar-row"><span>001 head load²</span><div class="axis"><i class="neg" style="right:50%;width:23.57%"></i></div><em>−9.43%</em></div>
-              <div class="bar-row"><span>000 whole-wire load²</span><div class="axis"><i class="neg" style="right:50%;width:0.42%"></i></div><em>−0.17%</em></div>
-              <div class="bar-row"><span>001 whole-wire load²</span><div class="axis"><i class="neg" style="right:50%;width:0.46%"></i></div><em>−0.18%</em></div>
-              <div class="bar-row"><span>000 tip acceleration</span><div class="axis"><i class="neg" style="right:50%;width:28.62%"></i></div><em>−11.45%</em></div>
-              <div class="bar-row"><span>001 tip acceleration</span><div class="axis"><i class="neg" style="right:50%;width:40.73%"></i></div><em>−16.29%</em></div>
-            </div>
-          </div>
-          <div class="callout">
-            <h3>Why this is not a passing result</h3>
-            <p>The pre-registered rule required at least a 5% drop in magnetic-head contact integral on both vessels, at least a 3% drop in whole-wire load squared integral, and limits on peak load and time. Vessel 000 head contact fell 4.665%, short of 5%. Whole-wire unloading was about 0.2% on both routes.</p>
-            <p>So <em>qualified_improvement</em> is false, the default model stays, and independent tests were not launched. The code flag <em>new_learning_value</em> only marks a directional gain on these two development pairings. It is not statistical significance.</p>
-          </div>
-        </div>
-
+        <p class="section-index">02 — Finding so far</p>
+        <h2>Slowing down is what helped. The learned steering gains did not.</h2>
+        <p>Three successive searches (constrained Bayesian optimisation over ≤ 11 parameters, θ = 0 is exactly V28 at 5 mm/s) produced controllers that passed per-vessel gates on 8 training vessels, an independent raw audit, and 6 development vessels. All three bought large head-force reductions with longer passages:</p>
         <table>
-          <thead>
-            <tr><th>Metric</th><th>Dev. 000</th><th>Dev. 001</th></tr>
-          </thead>
+          <thead><tr><th>Controller (development vessels, vs true V28)</th><th>Head ∫F²ds</th><th>Passage time</th><th>Tip acceleration</th><th>Tip-speed std</th></tr></thead>
           <tbody>
-            <tr><td>Full completion and whole-wire sampled audit</td><td>Pass</td><td>Pass</td></tr>
-            <tr><td>Magnetic-head contact integral</td><td>−4.665%</td><td>−10.468%</td></tr>
-            <tr><td>Magnetic-head normal-load squared integral</td><td>−8.943%</td><td>−9.429%</td></tr>
-            <tr><td>Magnetic-head mean normal load</td><td>−5.930%</td><td>−5.364%</td></tr>
-            <tr><td>Magnetic-head total normal-load peak</td><td>+0.539%</td><td>−4.805%</td></tr>
-            <tr><td>Whole-wire normal-load squared integral</td><td>−0.166%</td><td>−0.182%</td></tr>
-            <tr><td>Whole-wire total normal-load peak</td><td>−0.006%</td><td>−0.087%</td></tr>
-            <tr><td>Physical transit time</td><td>−0.022%</td><td>+0.011%</td></tr>
-            <tr><td>Tip mean speed</td><td>−0.813%</td><td>−1.107%</td></tr>
-            <tr><td>Tip speed standard deviation</td><td>−0.149%</td><td>+3.821%</td></tr>
-            <tr><td>Tip acceleration squared integral / s</td><td>−11.449%</td><td>−16.291%</td></tr>
-            <tr><td>Realized field-rate squared integral / s</td><td>+251.0%</td><td>+290.0%</td></tr>
+            <tr><td>A4 · A2_eval021</td><td>−52 … −71%</td><td>×1.70 … ×1.94</td><td>×0.33 … ×0.66</td><td>–</td></tr>
+            <tr><td>A6 · eval006</td><td>−49 … −70%</td><td>×1.39 … ×1.48</td><td>×0.29 … ×0.64</td><td>×0.94 … ×1.27</td></tr>
+            <tr><td>A8 · eval005 (adopted)</td><td>−48 … −68%</td><td>×1.49 … ×1.51</td><td>×0.37 … ×0.70</td><td>×0.62 … ×0.80</td></tr>
           </tbody>
         </table>
-        <p class="muted">Magnetic-head contact integrals fell from 215.542 / 231.711 mm·s to 205.486 / 207.456 mm·s. Mean magnetic-head normal load fell from 15.796 / 13.875 mN to 14.859 / 13.131 mN. Whole-wire squared integrals remain 116.238 / 49.680 N²s, with peaks 4.412 / 2.323 N. “Total load” is the sum of contact normal forces. The peak is not a single-contact tissue pressure, and N²s is not mechanical work.</p>
-        <p class="muted">After tip progress exceeds 200 mm, that interval accounts for 97.2% / 88.0% of the warm whole-wire load squared integral. Magnetic-head normal impulse is only about 1.76%–2.28% of whole-wire normal impulse. Local head gains are diluted by later shaft contact. Maximum proximal 5 mm/s command error is 4.7×10⁻¹² mm/s.</p>
-      </div>
-    </section>
-
-    <section id="geometry">
-      <div class="wrap">
-        <p class="section-index">03 — Generated vessels</p>
-        <h2>The lumens MAGIC actually trains and evaluates on.</h2>
-        <p>These isometric drawings are built from the generated triangular wall meshes, not schematic sketches. Rings of the open lumen are projected in depth order; the gold curve is the ring-centroid centerline, teal marks the inlet, red the outlet. They are synthetic rigid tubes, not patient anatomy, and they are not simulation trajectories.</p>
         <div class="grid-2">
-          <figure class="figure">
-            <img src="figures/vessel_295.svg" alt="295 mm benchmark centerline with inlet, R50 bend, R18 bend, and outlet labeled">
-            <figcaption><strong>Figure 1.</strong> Early 295 mm mixed-bend benchmark used to stand up complete-route navigation. Inlet at the bottom, outlet at the top. This preview is not a simulation result.</figcaption>
-          </figure>
-          <figure class="figure">
-            <img src="figures/vessel_295_2mm.svg" alt="Same 295 mm route preview with 2 mm wall discretization">
-            <figcaption><strong>Figure 2.</strong> Same route with coarser 2 mm wall discretization. Later MAGIC learning uses the denser generated curvature-matched pools below.</figcaption>
-          </figure>
+          <div>
+            <h3>The same-speed control (M1)</h3>
+            <p>We then ran V28 with its own steering gains but A8's constant feed (0.66 × 5 mm/s) on the same 14 vessels. It reproduced A8: against it, A8 changed head ∫F²ds by −0.25%, tip acceleration by +0.10%, tip-speed std by −0.03% and time by −0.01% on average. The pre-registered rule required ≥ 10% to keep the “learned field gains” claim; it was not met.</p>
+          </div>
+          <div class="callout">
+            <h3>How to read this</h3>
+            <p>Head force scales roughly with feed speed squared in this simulator (fitted exponent ≈ −2 in time), so a uniform slow-down is a strong baseline. Part of that benefit depends on the simulated damping, which is not calibrated against hardware. From M2 on, <em>same-speed V28 is the main baseline</em>: a method has to win at equal passage time.</p>
+          </div>
         </div>
-        <figure class="figure">
-          <img src="figures/development_vessels.svg?v=2" alt="Principal-axis views of development vessels validation_curvature_000 and 001">
-          <figcaption><strong>Figure 3.</strong> Development vessels 000 and 001 from the curvature-matched validation split. These are the two full-route pairings in the V8 table. They were inspected during diagnostics and are not a held-out test set.</figcaption>
-        </figure>
-        <figure class="figure">
-          <img src="figures/training_pool_gallery.svg?v=2" alt="Gallery of twelve MAGIC training-pool vessels visited during V8">
-          <figcaption><strong>Figure 4.</strong> The 12 training-pool lumens actually visited in the V8 12,000-interaction run, out of 32 generated vessels (seed 731001, lengths about 271–298 mm). Local radius and bend planes vary; walls remain rigid.</figcaption>
-        </figure>
-        <figure class="figure">
-          <img src="figures/training_pool_rest.svg?v=2" alt="Gallery of the remaining twenty MAGIC training-pool vessels">
-          <figcaption><strong>Figure 5.</strong> The other 20 lumens in the same generated training pool. This round did not visit them. Showing the rest of the pool is not a claim that they were trained or evaluated.</figcaption>
-        </figure>
       </div>
     </section>
 
-    <section id="figures">
+    <section id="generalization">
       <div class="wrap">
-        <p class="section-index">04 — Existing result figures</p>
-        <h2>Early learning pilots, not V8.</h2>
-        <p>The three figures below are earlier single-route pilots. Each policy ran one deterministic trajectory. They show that the pipeline can finish the route and compare contact, acceleration, and training progress. They are not V8 magnetic-head unloading, and they are not multi-seed or untrained-vessel conclusions.</p>
+        <p class="section-index">03 — Generalization (M2)</p>
+        <h2>On 48 unseen vessels the slow-down gain holds on every one.</h2>
+        <p>48 synthetic lumens never used for training or selection, three arms each (true V28, same-speed V28, A8), one fine-precision full passage per arm. All 144 passages completed. A8 against true V28:</p>
+        <div class="metrics">
+          <div class="metric"><b class="down">−59.0%</b><span>Head ∫F²ds, mean · worst vessel −52.4% · 48/48 lower</span></div>
+          <div class="metric"><b class="down">−11.3%</b><span>Head wall-contact length (per insertion distance) · worst +6.8%</span></div>
+          <div class="metric"><b class="down">−11.6%</b><span>Tip-speed std · worst +13.2%</span></div>
+          <div class="metric"><b class="up">+50.7%</b><span>Passage time · worst +51.7%</span></div>
+          <div class="metric"><b class="flat">−14.8%</b><span>Tip acceleration energy, median · mean −0.2%, worst +136.3%</span></div>
+          <div class="metric"><b class="flat">0</b><span>Change in significant head collisions (re-contact peak ≥ 5 mN)</span></div>
+        </div>
+        <div class="grid-2">
+          <figure class="chart">
+            <svg viewBox="0 0 560 420" role="img" aria-label="Per-vessel head-force change: learned controller versus same-speed V28, 48 unseen synthetic vessels">
+<line x1="64" x2="530" y1="368.0" y2="368.0" stroke="#2c2c2a" stroke-width="1"/>
+<line y1="18" y2="368" x1="64.0" x2="64.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="372.0" text−anchor="end" class="tick">−70%</text>
+<text x="64.0" y="386" text−anchor="middle" class="tick">−70%</text>
+<line x1="64" x2="530" y1="280.5" y2="280.5" stroke="#2c2c2a" stroke-width="1"/>
+<line y1="18" y2="368" x1="180.5" x2="180.5" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="284.5" text−anchor="end" class="tick">−65%</text>
+<text x="180.5" y="386" text−anchor="middle" class="tick">−65%</text>
+<line x1="64" x2="530" y1="193.0" y2="193.0" stroke="#2c2c2a" stroke-width="1"/>
+<line y1="18" y2="368" x1="297.0" x2="297.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="197.0" text−anchor="end" class="tick">−60%</text>
+<text x="297.0" y="386" text−anchor="middle" class="tick">−60%</text>
+<line x1="64" x2="530" y1="105.5" y2="105.5" stroke="#2c2c2a" stroke-width="1"/>
+<line y1="18" y2="368" x1="413.5" x2="413.5" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="109.5" text−anchor="end" class="tick">−55%</text>
+<text x="413.5" y="386" text−anchor="middle" class="tick">−55%</text>
+<line x1="64" x2="530" y1="18.0" y2="18.0" stroke="#2c2c2a" stroke-width="1"/>
+<line y1="18" y2="368" x1="530.0" x2="530.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="22.0" text−anchor="end" class="tick">−50%</text>
+<text x="530.0" y="386" text−anchor="middle" class="tick">−50%</text>
+<line x1="64.0" y1="368.0" x2="530.0" y2="18.0" stroke="#898781" stroke-width="1"/>
+<text x="495.1" y="32.0" text-anchor="end" class="note">y = x</text>
+<g class="pt"><title>train_random_089: same−speed V28 −67.1%, learned A8 −67.4%</title><circle cx="131.2" cy="322.0" r="10" fill="transparent"/><circle cx="131.2" cy="322.0" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_100: same−speed V28 −66.2%, learned A8 −66.3%</title><circle cx="151.5" cy="303.7" r="10" fill="transparent"/><circle cx="151.5" cy="303.7" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_082: same−speed V28 −64.5%, learned A8 −64.6%</title><circle cx="192.1" cy="273.5" r="10" fill="transparent"/><circle cx="192.1" cy="273.5" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_022: same−speed V28 −64.3%, learned A8 −64.6%</title><circle cx="197.2" cy="273.9" r="10" fill="transparent"/><circle cx="197.2" cy="273.9" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_127: same−speed V28 −63.6%, learned A8 −63.9%</title><circle cx="212.8" cy="261.2" r="10" fill="transparent"/><circle cx="212.8" cy="261.2" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_063: same−speed V28 −63.6%, learned A8 −63.8%</title><circle cx="214.2" cy="259.2" r="10" fill="transparent"/><circle cx="214.2" cy="259.2" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_069: same−speed V28 −63.3%, learned A8 −63.7%</title><circle cx="219.2" cy="258.1" r="10" fill="transparent"/><circle cx="219.2" cy="258.1" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_050: same−speed V28 −62.8%, learned A8 −63.1%</title><circle cx="232.1" cy="247.4" r="10" fill="transparent"/><circle cx="232.1" cy="247.4" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_062: same−speed V28 −62.7%, learned A8 −62.9%</title><circle cx="234.3" cy="244.1" r="10" fill="transparent"/><circle cx="234.3" cy="244.1" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_025: same−speed V28 −62.1%, learned A8 −62.3%</title><circle cx="248.5" cy="233.9" r="10" fill="transparent"/><circle cx="248.5" cy="233.9" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_043: same−speed V28 −61.7%, learned A8 −62.0%</title><circle cx="256.6" cy="228.1" r="10" fill="transparent"/><circle cx="256.6" cy="228.1" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_074: same−speed V28 −61.1%, learned A8 −62.9%</title><circle cx="271.1" cy="244.6" r="10" fill="transparent"/><circle cx="271.1" cy="244.6" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_036: same−speed V28 −61.0%, learned A8 −61.2%</title><circle cx="273.0" cy="214.6" r="10" fill="transparent"/><circle cx="273.0" cy="214.6" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_009: same−speed V28 −60.2%, learned A8 −60.6%</title><circle cx="291.8" cy="202.9" r="10" fill="transparent"/><circle cx="291.8" cy="202.9" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_077: same−speed V28 −59.9%, learned A8 −60.2%</title><circle cx="300.0" cy="196.2" r="10" fill="transparent"/><circle cx="300.0" cy="196.2" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_060: same−speed V28 −59.2%, learned A8 −59.6%</title><circle cx="316.4" cy="185.4" r="10" fill="transparent"/><circle cx="316.4" cy="185.4" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_121: same−speed V28 −59.0%, learned A8 −59.3%</title><circle cx="320.4" cy="180.0" r="10" fill="transparent"/><circle cx="320.4" cy="180.0" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_019: same−speed V28 −58.8%, learned A8 −59.1%</title><circle cx="324.8" cy="177.5" r="10" fill="transparent"/><circle cx="324.8" cy="177.5" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_053: same−speed V28 −58.7%, learned A8 −59.1%</title><circle cx="327.2" cy="176.5" r="10" fill="transparent"/><circle cx="327.2" cy="176.5" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_081: same−speed V28 −58.6%, learned A8 −59.0%</title><circle cx="330.5" cy="175.1" r="10" fill="transparent"/><circle cx="330.5" cy="175.1" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_115: same−speed V28 −58.5%, learned A8 −58.7%</title><circle cx="331.0" cy="170.3" r="10" fill="transparent"/><circle cx="331.0" cy="170.3" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_105: same−speed V28 −58.5%, learned A8 −59.2%</title><circle cx="331.5" cy="178.7" r="10" fill="transparent"/><circle cx="331.5" cy="178.7" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>validation_random_031: same−speed V28 −58.3%, learned A8 −58.5%</title><circle cx="337.1" cy="166.5" r="10" fill="transparent"/><circle cx="337.1" cy="166.5" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_014: same−speed V28 −58.2%, learned A8 −58.5%</title><circle cx="339.5" cy="167.1" r="10" fill="transparent"/><circle cx="339.5" cy="167.1" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>validation_random_030: same−speed V28 −57.8%, learned A8 −58.1%</title><circle cx="348.7" cy="160.3" r="10" fill="transparent"/><circle cx="348.7" cy="160.3" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_010: same−speed V28 −57.7%, learned A8 −58.3%</title><circle cx="350.3" cy="162.7" r="10" fill="transparent"/><circle cx="350.3" cy="162.7" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_091: same−speed V28 −57.3%, learned A8 −57.9%</title><circle cx="359.9" cy="156.1" r="10" fill="transparent"/><circle cx="359.9" cy="156.1" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_076: same−speed V28 −57.2%, learned A8 −57.4%</title><circle cx="362.2" cy="147.6" r="10" fill="transparent"/><circle cx="362.2" cy="147.6" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_108: same−speed V28 −57.2%, learned A8 −57.6%</title><circle cx="362.7" cy="150.2" r="10" fill="transparent"/><circle cx="362.7" cy="150.2" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_054: same−speed V28 −56.9%, learned A8 −57.2%</title><circle cx="369.6" cy="144.3" r="10" fill="transparent"/><circle cx="369.6" cy="144.3" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_031: same−speed V28 −56.7%, learned A8 −57.0%</title><circle cx="372.7" cy="140.1" r="10" fill="transparent"/><circle cx="372.7" cy="140.1" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_033: same−speed V28 −56.7%, learned A8 −56.9%</title><circle cx="373.2" cy="139.4" r="10" fill="transparent"/><circle cx="373.2" cy="139.4" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_094: same−speed V28 −56.6%, learned A8 −56.8%</title><circle cx="377.1" cy="136.7" r="10" fill="transparent"/><circle cx="377.1" cy="136.7" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_112: same−speed V28 −56.5%, learned A8 −56.7%</title><circle cx="379.0" cy="134.4" r="10" fill="transparent"/><circle cx="379.0" cy="134.4" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_028: same−speed V28 −56.4%, learned A8 −56.6%</title><circle cx="381.9" cy="134.3" r="10" fill="transparent"/><circle cx="381.9" cy="134.3" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_070: same−speed V28 −56.3%, learned A8 −56.8%</title><circle cx="382.4" cy="136.6" r="10" fill="transparent"/><circle cx="382.4" cy="136.6" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_092: same−speed V28 −56.3%, learned A8 −56.6%</title><circle cx="384.2" cy="133.0" r="10" fill="transparent"/><circle cx="384.2" cy="133.0" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_030: same−speed V28 −56.2%, learned A8 −56.4%</title><circle cx="385.6" cy="129.8" r="10" fill="transparent"/><circle cx="385.6" cy="129.8" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_034: same−speed V28 −56.2%, learned A8 −56.6%</title><circle cx="385.8" cy="133.7" r="10" fill="transparent"/><circle cx="385.8" cy="133.7" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_041: same−speed V28 −56.0%, learned A8 −56.4%</title><circle cx="391.3" cy="130.1" r="10" fill="transparent"/><circle cx="391.3" cy="130.1" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_066: same−speed V28 −55.6%, learned A8 −55.7%</title><circle cx="400.0" cy="118.4" r="10" fill="transparent"/><circle cx="400.0" cy="118.4" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_117: same−speed V28 −55.2%, learned A8 −55.6%</title><circle cx="408.2" cy="116.9" r="10" fill="transparent"/><circle cx="408.2" cy="116.9" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_103: same−speed V28 −55.2%, learned A8 −55.5%</title><circle cx="408.3" cy="114.0" r="10" fill="transparent"/><circle cx="408.3" cy="114.0" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_116: same−speed V28 −55.2%, learned A8 −55.6%</title><circle cx="409.6" cy="115.6" r="10" fill="transparent"/><circle cx="409.6" cy="115.6" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_011: same−speed V28 −55.2%, learned A8 −55.4%</title><circle cx="409.9" cy="113.3" r="10" fill="transparent"/><circle cx="409.9" cy="113.3" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_098: same−speed V28 −55.0%, learned A8 −55.2%</title><circle cx="413.7" cy="108.3" r="10" fill="transparent"/><circle cx="413.7" cy="108.3" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_051: same−speed V28 −52.1%, learned A8 −52.4%</title><circle cx="480.4" cy="60.8" r="10" fill="transparent"/><circle cx="480.4" cy="60.8" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>train_random_078: same−speed V28 −51.5%, learned A8 −52.9%</title><circle cx="494.7" cy="69.6" r="10" fill="transparent"/><circle cx="494.7" cy="69.6" r="4.5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<text x="297" y="410" text-anchor="middle" class="lab">Same-speed V28 vs true V28 · change in head ∫F<tspan baseline-shift="super" font-size="9">2</tspan>ds</text>
+<text transform="translate(16 193) rotate(-90)" text-anchor="middle" class="lab">Learned A8 vs true V28</text>
+</svg>
+            <figcaption><strong>Figure 1.</strong> Each dot is one of 48 unseen vessels: head ∫F²ds change of same-speed V28 (x) and of A8 (y), both against true V28. The dots sit on the diagonal: against same-speed V28, A8 differs by −0.87% on average (worst −0.23%). Hover a dot for its values.</figcaption>
+          </figure>
+          <div>
+            <h3>By geometry class</h3>
+            <table>
+              <thead><tr><th>Class</th><th>n</th><th>∫F²ds mean</th><th>worst</th><th>Accel. median</th><th>Time</th></tr></thead>
+              <tbody><tr><td>Sharp bends</td><td>16</td><td>−60.0%</td><td>−55.2%</td><td>−19.0%</td><td>+50.4%</td></tr><tr><td>Compound bends</td><td>5</td><td>−56.0%</td><td>−55.2%</td><td>+3.0%</td><td>+51.5%</td></tr><tr><td>Torsion</td><td>16</td><td>−57.2%</td><td>−52.4%</td><td>−41.6%</td><td>+50.7%</td></tr><tr><td>Narrow lumen</td><td>12</td><td>−56.5%</td><td>−52.4%</td><td>−31.5%</td><td>+50.9%</td></tr></tbody>
+            </table>
+            <p class="muted">Classes overlap (a vessel can be sharp and narrow). Tip acceleration is not consistently better: the median falls, but the worst vessel rises +136%. Smoothness is what the current work (M3) has to earn.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        <figure class="figure">
-          <img src="figures/learning_effect_v1.svg" alt="Expert, behavior cloning, PPO, CUDA refinement, and random policies compared on contact, smoothness, control effort, and progress">
-          <figcaption><strong>Figure 6.</strong> Pilot learning effect. Expert, behavior cloning, PPO, CUDA refinement, and random actions all complete this route. PPO contact is slightly below expert; motion smoothness does not improve with it. Contact is a clearance proxy, not tissue pressure. One deterministic route, one rollout per policy.</figcaption>
-        </figure>
+    <section id="anatomy">
+      <div class="wrap">
+        <p class="section-index">04 — Patient-derived routes</p>
+        <h2>13 fixed routes through real branched vessels. Most do not run cleanly yet.</h2>
+        <p>Routes were built from seven Vascular Model Repository projects: retrograde through the aortic arch into the carotid, external carotid, subclavian and vertebral arteries, and up the vertebral arteries into the basilar. Each route is fixed; every non-route outlet keeps its original cap, so entering a wrong branch ends at a real wall. A straight lead-in is extruded from the exact inlet cross-section so the simulator's insertion contract holds; its length is recorded per route.</p>
+        <figure class="figure"><img src="figures/vmr_routes_a.png" alt="Orthographic previews of patient-derived routes and lumens"><figcaption><strong>Figure 2.</strong> Route centerlines (black), lumen vertices (red) and the straight initial wire line (blue), two orthographic views per route. Geometry previews, not simulation trajectories.</figcaption></figure><figure class="figure"><img src="figures/vmr_routes_b.png" alt="Orthographic previews of patient-derived routes and lumens"><figcaption><strong>Figure 3.</strong> Route centerlines (black), lumen vertices (red) and the straight initial wire line (blue), two orthographic views per route. Geometry previews, not simulation trajectories.</figcaption></figure>
+        <table>
+          <thead><tr><th>Route</th><th>Group</th><th>True V28</th><th>A8</th><th>A8 vs V28 ∫F²ds</th></tr></thead>
+          <tbody><tr><td>vmr0050_lva</td><td>Vertebrobasilar</td><td>audit clip planes incompatible</td><td>audit clip planes incompatible</td><td>–</td></tr><tr><td>vmr0050_rva</td><td>Vertebrobasilar</td><td>whole rod sample penetration at 117/300 mm</td><td>whole rod sample penetration at 134/300 mm</td><td>–</td></tr><tr><td>vmr0051_lva</td><td>Vertebrobasilar</td><td>audit clip planes incompatible</td><td>audit clip planes incompatible</td><td>–</td></tr><tr><td>vmr0051_rva</td><td>Vertebrobasilar</td><td>success</td><td>success</td><td>−39.5%</td></tr><tr><td>vmr0052_lva</td><td>Vertebrobasilar</td><td>whole rod sample penetration at 19/223 mm</td><td>whole rod sample penetration at 21/223 mm</td><td>–</td></tr><tr><td>vmr0052_rva</td><td>Vertebrobasilar</td><td>success</td><td>success</td><td>−40.1%</td></tr><tr><td>vmr0053_rva</td><td>Vertebrobasilar</td><td>wall penetration at 113/246 mm</td><td>wall penetration at 113/246 mm</td><td>–</td></tr><tr><td>vmr0248_bct_rcca</td><td>Aortic arch</td><td>wall penetration at 158/280 mm</td><td>wall penetration at 204/280 mm</td><td>–</td></tr><tr><td>vmr0248_lcca_leca</td><td>Aortic arch</td><td>wall penetration at 153/279 mm</td><td>wall penetration at 153/279 mm</td><td>–</td></tr><tr><td>vmr0248_lcca_lica</td><td>Aortic arch</td><td>wall penetration at 153/312 mm</td><td>wall penetration at 153/312 mm</td><td>–</td></tr><tr><td>vmr0248_lsa_lva</td><td>Aortic arch</td><td>wire looped in the arch; stopped at full insertion</td><td>wall penetration at 184/233 mm</td><td>–</td></tr><tr><td>vmr0248_rcca_reca</td><td>Aortic arch</td><td>wall penetration at 157/312 mm</td><td>wall penetration at 202/312 mm</td><td>–</td></tr><tr><td>vmr0248_rsa_rva</td><td>Aortic arch</td><td>wall penetration at 162/295 mm</td><td>wall penetration at 167/295 mm</td><td>–</td></tr></tbody>
+        </table>
+        <p class="muted">Both controllers fail on the same routes in the same way, so these are route or contract problems, not controller differences. In the aortic arch the run stops on the −0.1 mm penetration guard at low head force (about 5–13 mN) near the arch apex and branch ostia; this has not been diagnosed and is not a physical conclusion. Some vertebral lumens are barely wider than the 1 mm wire, and two routes turn back toward their own lead-in, which the audit's clip planes do not support. On the two routes that complete, A8 lowers head ∫F²ds by about 40% at 1.5× time. A revised route set is planned.</p>
+      </div>
+    </section>
 
-        <figure class="figure">
-          <img src="figures/refinement_comparison.svg" alt="Expert, pilot PPO, PPO v1, and PPO v2 compared on contact duration, acceleration, simulation time, and field change">
-          <figcaption><strong>Figure 7.</strong> Refinement comparison. v2 improves on v1, but contact duration and acceleration still exceed expert. Descriptive single-route comparison; the reused expert trajectory is not an independent sample.</figcaption>
-        </figure>
-
-        <figure class="figure">
-          <img src="figures/cuda_refinement_progress_v1.svg" alt="CUDA refinement checkpoint count and current run progress">
-          <figcaption><strong>Figure 8.</strong> One CUDA refinement run. 8,192 requested steps were all optimized, with 160 updates and 32 checkpoints. The figure records that the run finished. It does not mean control improved.</figcaption>
-        </figure>
+    <section id="current">
+      <div class="wrap">
+        <p class="section-index">05 — Current work (M3)</p>
+        <h2>Beat uniform slow-down at the same passage time.</h2>
+        <p>Training now uses 32 vessels (8 earlier + 24 new). Every policy is scored per vessel against same-speed V28; hard constraints: every passage succeeds, mean time within +1% (worst vessel +12%), worst-vessel tip acceleration within +30%, no more significant collisions.</p>
+        <div class="grid-3">
+          <article class="card"><h3>M3 · absolute load feedback</h3><p>Slow down when filtered head load exceeds a fixed 8 mN reference. On the 24 new, low-load vessels the feed saturated at 5 mm/s: time −28 … −33%, head ∫F²ds +53 … +144%. A fixed reference cannot fit vessels of different load levels. Stopped.</p></article>
+          <article class="card"><h3>M3b · relative load feedback</h3><p>Compare fast and slow low-passes of the same vessel's head load: slow down above the vessel's own recent level, catch up below it. Head ∫F²ds −19 … −20% on every vessel at equal mean time, but the feed changed too abruptly: worst-vessel tip acceleration +56 … +80%. Stopped.</p></article>
+          <article class="card"><h3>M3c · rate-limited</h3><p>Same law with a limit on how fast the feed may change, and smoothness in the objective. First design meeting every constraint: eval002, head ∫F²ds −10.6%, tip acceleration −12.2%, mean time +0.22%. Its tip-speed std rose +118% — the feed is deliberately non-uniform.</p></article>
+        </div>
+        <div class="grid-2" style="margin-top:18px">
+          <figure class="chart">
+            <div class="legend"><span><i class="dot" style="background:#3987e5"></i>meets all hard constraints</span><span><i class="ring" style="border-color:#d95926"></i>violates a hard constraint</span></div><svg viewBox="0 0 560 400" role="img" aria-label="Feed-policy evaluations: passage time versus head force, relative to same-speed V28">
+<rect x="64" y="18" width="128.2" height="330" fill="#3987e5" opacity="0.10"/>
+<text x="70" y="340" class="note">mean time ≤ +1% (hard limit)</text>
+<line x1="64" x2="530" y1="348.0" y2="348.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="352.0" text−anchor="end" class="tick">−40%</text>
+<line x1="64" x2="530" y1="311.3" y2="311.3" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="315.3" text−anchor="end" class="tick">−35%</text>
+<line x1="64" x2="530" y1="274.7" y2="274.7" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="278.7" text−anchor="end" class="tick">−30%</text>
+<line x1="64" x2="530" y1="238.0" y2="238.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="242.0" text−anchor="end" class="tick">−25%</text>
+<line x1="64" x2="530" y1="201.3" y2="201.3" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="205.3" text−anchor="end" class="tick">−20%</text>
+<line x1="64" x2="530" y1="164.7" y2="164.7" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="168.7" text−anchor="end" class="tick">−15%</text>
+<line x1="64" x2="530" y1="128.0" y2="128.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="132.0" text−anchor="end" class="tick">−10%</text>
+<line x1="64" x2="530" y1="91.3" y2="91.3" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="95.3" text−anchor="end" class="tick">−5%</text>
+<line x1="64" x2="530" y1="54.7" y2="54.7" stroke="#383835" stroke-width="1"/>
+<text x="56" y="58.7" text−anchor="end" class="tick">0%</text>
+<line x1="64" x2="530" y1="18.0" y2="18.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="22.0" text−anchor="end" class="tick">+5%</text>
+<line y1="18" y2="348" x1="64.0" x2="64.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="64.0" y="366" text−anchor="middle" class="tick">−10%</text>
+<line y1="18" y2="348" x1="122.2" x2="122.2" stroke="#2c2c2a" stroke-width="1"/>
+<text x="122.2" y="366" text−anchor="middle" class="tick">−5%</text>
+<line y1="18" y2="348" x1="180.5" x2="180.5" stroke="#383835" stroke-width="1"/>
+<text x="180.5" y="366" text−anchor="middle" class="tick">0%</text>
+<line y1="18" y2="348" x1="238.8" x2="238.8" stroke="#2c2c2a" stroke-width="1"/>
+<text x="238.8" y="366" text−anchor="middle" class="tick">+5%</text>
+<line y1="18" y2="348" x1="297.0" x2="297.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="297.0" y="366" text−anchor="middle" class="tick">+10%</text>
+<line y1="18" y2="348" x1="355.2" x2="355.2" stroke="#2c2c2a" stroke-width="1"/>
+<text x="355.2" y="366" text−anchor="middle" class="tick">+15%</text>
+<line y1="18" y2="348" x1="413.5" x2="413.5" stroke="#2c2c2a" stroke-width="1"/>
+<text x="413.5" y="366" text−anchor="middle" class="tick">+20%</text>
+<line y1="18" y2="348" x1="471.8" x2="471.8" stroke="#2c2c2a" stroke-width="1"/>
+<text x="471.8" y="366" text−anchor="middle" class="tick">+25%</text>
+<line y1="18" y2="348" x1="530.0" x2="530.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="530.0" y="366" text−anchor="middle" class="tick">+30%</text>
+<g class="pt"><title>eval001: head ∫F²ds −4.6%, tip acceleration −5.6%, mean time −2.08% (worst vessel +8.2%), speed std +225% · violates a hard constraint</title><circle cx="156.3" cy="88.1" r="11" fill="transparent"/><circle cx="156.3" cy="88.1" r="4.5" fill="#141414" stroke="#d95926" stroke-width="2"/></g>
+<g class="pt"><title>eval002: head ∫F²ds −10.6%, tip acceleration −12.2%, mean time +0.22% (worst vessel +8.8%), speed std +118% · meets all hard constraints</title><circle cx="183.1" cy="132.4" r="11" fill="transparent"/><circle cx="183.1" cy="132.4" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>eval003: head ∫F²ds −29.9%, tip acceleration −14.4%, mean time +24.94% (worst vessel +52.0%), speed std +226% · violates a hard constraint</title><circle cx="471.1" cy="274.0" r="11" fill="transparent"/><circle cx="471.1" cy="274.0" r="4.5" fill="#141414" stroke="#d95926" stroke-width="2"/></g>
+<g class="pt"><title>eval004: head ∫F²ds −9.5%, tip acceleration −13.0%, mean time −0.20% (worst vessel +10.4%), speed std +148% · meets all hard constraints</title><circle cx="178.2" cy="124.2" r="11" fill="transparent"/><circle cx="178.2" cy="124.2" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>eval005: head ∫F²ds −15.2%, tip acceleration −8.5%, mean time +4.37% (worst vessel +10.0%), speed std +43% · violates a hard constraint</title><circle cx="231.4" cy="166.4" r="11" fill="transparent"/><circle cx="231.4" cy="166.4" r="4.5" fill="#141414" stroke="#d95926" stroke-width="2"/></g>
+<g class="pt"><title>eval006: head ∫F²ds −7.6%, tip acceleration −4.4%, mean time +1.84% (worst vessel +4.8%), speed std +14% · violates a hard constraint</title><circle cx="202.0" cy="110.7" r="11" fill="transparent"/><circle cx="202.0" cy="110.7" r="4.5" fill="#141414" stroke="#d95926" stroke-width="2"/></g>
+<text x="192.1" y="136.4" text-anchor="start" class="note">eval002 · best feasible</text>
+<text x="462.1" y="278.0" text-anchor="end" class="note">eval003 · too slow</text>
+<text x="297" y="390" text-anchor="middle" class="lab">Mean passage-time change vs same-speed V28</text>
+<text transform="translate(16 183) rotate(-90)" text-anchor="middle" class="lab">Mean head ∫F²ds change</text>
+</svg>
+            <figcaption><strong>Figure 4.</strong> The 6 scored feed policies of the current search on the 32 training vessels, against same-speed V28. Filled: meets every hard constraint; ring: violates one. The shaded band is the mean-time limit. Hover a point for all metrics.</figcaption>
+          </figure>
+          <div class="callout">
+            <h3>Next: time-matched scoring (M3d)</h3>
+            <p>Small time differences blur the comparison, because force falls steeply with time. Re-scoring every M3c design against a per-vessel uniform baseline interpolated to the policy's own passage time gives an equal-time gain of about −8 … −11% in head ∫F²ds and −4 … −9% in tip acceleration. That is close to, but not yet reliably above, the 10% bar, and every design still has a vessel where force does not fall. M3d searches on this time-matched objective with a stronger penalty on speed fluctuation; it starts after M3c's development checkpoint.</p>
+          </div>
+        </div>
       </div>
     </section>
 
     <section id="method">
       <div class="wrap">
-        <p class="section-index">05 — Method and earlier rounds</p>
-        <h2>Align physics and accounting before claiming learning.</h2>
+        <p class="section-index">06 — Method</p>
+        <h2>Real physics first, then a small learned policy.</h2>
         <div class="steps">
-          <div class="step">
-            <b>01 Scene</b>
-            <p>SOFA elastic rod, complete triangular wall, friction. Magnetic gradient traction and post-solve position correction are off. The magnetic head is measured from the actual magnetic segment. Shaft wall-contact length is no longer a penalty.</p>
-          </div>
-          <div class="step">
-            <b>02 Action</b>
-            <p>The actor sees local information and the known constant feed, and outputs a magnetic-field residual. Amplitude 20 mT, slew 0.03 T/s, residual scale 0.2. The critic may read more of the shaft and forces during training.</p>
-          </div>
-          <div class="step">
-            <b>03 Learning</b>
-            <p>The value network is updated first. Policy updates start after enough real successful episodes. V8 used 12,000 new interactions and 3,920 updates, and actually visited 12 of 32 training-pool vessels.</p>
-          </div>
-          <div class="step">
-            <b>04 Acceptance</b>
-            <p>Comparison starts only after both development vessels complete, every physics step converges, and force and objective terms recompute. The default model is not replaced if the pre-registered bar is missed.</p>
-          </div>
-        </div>
-
-        <div class="grid-3" style="margin-top:22px">
-          <article class="card">
-            <h3>Solver time</h3>
-            <p>On the same ~285 mm routes, a strict residual-preserving solver cut complete simulations from about 52 minutes to 14–15 minutes. The two routes total 18,653 physics steps, all at the original residual threshold. Wall-clock ratios under different machine load are not a controlled speedup result by themselves.</p>
-          </article>
-          <article class="card">
-            <h3>Earlier pilot</h3>
-            <p>A constant-field pilot reduced whole-wire contact integrals by about 2.19% / 2.77% on two vessels. Speed was roughly held. Smoothness was not consistent, and the field changed more often. That was a single training seed, not a final result.</p>
-          </article>
-          <article class="card">
-            <h3>V5 did not reduce contact</h3>
-            <p>After objective-accounting repairs, same-budget learning versus warm was +1.58% / +1.36% whole-wire contact and +10.08% / +3.69% acceleration. A smoother field did not mean less wall contact. That round also did not replace the default model.</p>
-          </article>
+          <div class="step"><b>01 Scene</b><p>SOFA discrete elastic rod (121 nodes, 400 mm, 26.7 mm magnetic head), strict matrix-free contact with exact full-mesh queries, 6 ms physics step, 54 ms control. Field ≤ 20 mT, slew 0.03 T/s, field turn ≤ 150°/s.</p></div>
+          <div class="step"><b>02 Baseline</b><p>V28: three frozen networks plus geometric wall-normal steering and a head-clearance amplitude term, constant 5 mm/s feed. It is kept unchanged as the reference.</p></div>
+          <div class="step"><b>03 Policy</b><p>Bounded residuals on V28's steering gains and a feed multiplier φ ∈ [0.2, 1] (never faster than 5 mm/s), filtered and rate-limited; all integrals use the real step length.</p></div>
+          <div class="step"><b>04 Gates</b><p>Constrained Bayesian optimisation on training vessels; per-vessel hard limits on success, collisions and time; development vessels and an independent raw recomputation before adoption. The held-out test seed is used once, at the end.</p></div>
         </div>
       </div>
     </section>
 
     <section id="limits">
       <div class="wrap">
-        <p class="section-index">06 — What this does not show</p>
-        <h2>The gain stops at the magnetic head on two development vessels.</h2>
+        <p class="section-index">07 — What this does not show</p>
+        <h2>Simulation, rigid walls, one wire.</h2>
         <ul class="clean">
-          <li>Both development vessels were used repeatedly for diagnosis. This round is a single training seed. There is no independent test set and no multi-seed result, so no generalization claim.</li>
-          <li>Whole-wire load did not meet the pre-registered drop. The research objective is not complete.</li>
-          <li>The acceleration metric fell, while realized field-rate cost rose to about 3.5–3.9×. Not every smoothness measure improved.</li>
-          <li>7.5 mm/s is a speed control. Transit time was shorter, but wall-load energy and peaks were higher. That is not a learned faster-and-safer policy.</li>
-          <li>Materials, magnetization, and coils are uncalibrated. Completing a simulated lumen is not clinical safety, and a magnetic field is not required to finish: a zero-field wire can still be passively guided in an unbranched lumen.</li>
-          <li>Connecting SOFA to standard reinforcement learning is not, by itself, a contribution relative to existing magnetic continuum simulation and guidewire navigation work.</li>
+          <li>All results are simulated. Walls are rigid; there is no blood flow; materials, magnetization, friction and damping are not calibrated against hardware.</li>
+          <li>The current improvement comes from a uniform slow-down. A learned advantage at equal time is not established yet (M3 is in progress).</li>
+          <li>Development vessels were used repeatedly; the 48 generalization vessels and the patient-derived routes were not used for selection; the held-out test has not been run.</li>
+          <li>The wire is 1 mm in diameter, wider than clinical neurovascular wires; patient-derived routes are mostly failing and are reported as failure modes.</li>
+          <li>Each comparison is one deterministic full passage per vessel and arm (fine precision); there are no multi-seed statistics.</li>
         </ul>
       </div>
     </section>
@@ -242,8 +310,8 @@
 
   <footer>
     <div class="wrap">
-      <p>Project page: <a href="https://magic-guidewire.github.io">magic-guidewire.github.io</a>. Numbers and figures are from the 2026-10-09 checked record. Raw pairings live in <code>results/magic_head_force_study_v8_20261009</code>. Code: <a href="https://github.com/universeleaf/SOFA-magnetic-simulation">universeleaf/SOFA-magnetic-simulation</a>.</p>
-      <p>Page structure follows public research project sites: title, abstract, results, captions, and limits. Figures 3–5 are isometric drawings of generated MAGIC vessels. Figures 6–8 are earlier pilots, not the same experiment as the V8 table.</p>
+      <p>This page is regenerated from the project's checked experiment records (tools/build_site_20261030.py). Code: <a href="https://github.com/universeleaf/SOFA-magnetic-simulation">universeleaf/SOFA-magnetic-simulation</a>. Earlier page (V8, 2026-10-09): <a href="archive/2026-10-09-v8.html">archive</a>.</p>
+      <p>Patient-derived geometry: Vascular Model Repository (vascularmodel.com), CC BY-NC 4.0; supported by NIH R01LM013120 and HHSN268201100035C; Wilson et al., J. Med. Devices 7(4):040923, 2013.</p>
     </div>
   </footer>
 </body>

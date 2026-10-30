@@ -334,6 +334,42 @@ footer {
 
 footer a { color: var(--brass); }
 
+.chart {
+  margin: 0;
+  background: #141414;
+  border: 1px solid var(--line);
+  padding: 14px 14px 12px;
+}
+
+.chart svg { width: 100%; height: auto; display: block; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+.chart svg .tick { fill: #898781; font-size: 11px; font-variant-numeric: tabular-nums; }
+.chart svg .lab { fill: #c3c2b7; font-size: 12px; }
+.chart svg .note { fill: #c3c2b7; font-size: 11px; }
+.chart svg .pt { cursor: default; }
+.chart svg .pt:hover circle:last-child { stroke: #f0efec; }
+
+.chart figcaption {
+  margin: 10px 2px 0;
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.chart figcaption strong { color: var(--ink); font-weight: 600; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 6px; font-family: var(--sans); font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.legend .ring { width: 10px; height: 10px; border-radius: 50%; display: inline-block; border: 2px solid; box-sizing: border-box; }
+
+table.roadmap td { padding: 7px 6px; font-size: 14px; }
+table.roadmap td.left { text-align: left; color: var(--muted); }
+.state { font-size: 12px; letter-spacing: 0.04em; white-space: nowrap; }
+.state.done { color: var(--teal); }
+.state.running { color: var(--brass); }
+.state.planned { color: var(--faint); }
+
 @media (max-width: 860px) {
   .nav { align-items: flex-start; flex-direction: column; }
   .nav ul { flex-wrap: wrap; gap: 12px 16px; }
