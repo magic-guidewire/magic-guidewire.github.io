@@ -32,7 +32,7 @@
 
   <main id="top">
     <div class="wrap hero">
-      <p class="kicker">magic-guidewire.github.io · synced from the experiment records · 2026-10-30 09:22 UTC</p>
+      <p class="kicker">magic-guidewire.github.io · synced from the experiment records · 2026-10-30 09:53 UTC</p>
       <h1>MAGIC</h1>
       <p class="expansion">Magnetic Actuation for Guidewire Intelligent Control</p>
       <ul class="status">
@@ -51,7 +51,7 @@
         <div class="grid-2">
           <div>
             <p><strong>M3c · rate-limited relative-load feed</strong> <span class="muted">(m3c_smoothrel_learning_20261029a)</span> — state <em>running</em>, stage <em>bayesian_policy_search</em>.</p>
-            <p>Full passages in this experiment: <strong>189</strong> finished, <strong>0</strong> failed, <strong>6</strong> running (six run in parallel on CPU). Policy evaluations scored: <strong>6</strong>.</p>
+            <p>Full passages in this experiment: <strong>191</strong> finished, <strong>0</strong> failed, <strong>6</strong> running (six run in parallel on CPU). Policy evaluations scored: <strong>6</strong>.</p>
             <p class="muted">Best design meeting every hard constraint so far: <strong>eval002</strong>. Against same-speed V28 on the 32 training vessels: head ∫F²ds −10.6% (worst vessel −0.8%), tip acceleration −12.2%, mean time +0.22%, tip-speed std +118%.</p>
             <p class="muted">Adopted controller (passed its development gate and an independent raw audit): <strong>A8 eval005</strong>. Interrupted runs (machine restarts, app updates) are archived untouched and re-run from scratch; they are never counted.</p>
           </div>
@@ -195,14 +195,21 @@
     <section id="anatomy">
       <div class="wrap">
         <p class="section-index">04 — Patient-derived routes</p>
-        <h2>13 fixed routes through real branched vessels. Most do not run cleanly yet.</h2>
+        <h2>13 fixed routes through real branched vessels. The first run exposed measurement artefacts; the fixed set now shows real navigation outcomes.</h2>
         <p>Routes were built from seven Vascular Model Repository projects: retrograde through the aortic arch into the carotid, external carotid, subclavian and vertebral arteries, and up the vertebral arteries into the basilar. Each route is fixed; every non-route outlet keeps its original cap, so entering a wrong branch ends at a real wall. A straight lead-in is extruded from the exact inlet cross-section so the simulator's insertion contract holds; its length is recorded per route.</p>
         <figure class="figure"><img src="figures/vmr_routes_a.png" alt="Orthographic previews of patient-derived routes and lumens"><figcaption><strong>Figure 2.</strong> Route centerlines (black), lumen vertices (red) and the straight initial wire line (blue), two orthographic views per route. Geometry previews, not simulation trajectories.</figcaption></figure><figure class="figure"><img src="figures/vmr_routes_b.png" alt="Orthographic previews of patient-derived routes and lumens"><figcaption><strong>Figure 3.</strong> Route centerlines (black), lumen vertices (red) and the straight initial wire line (blue), two orthographic views per route. Geometry previews, not simulation trajectories.</figcaption></figure>
         <table>
-          <thead><tr><th>Route</th><th>Group</th><th>True V28</th><th>A8</th><th>A8 vs V28 ∫F²ds</th></tr></thead>
+          <thead><tr><th>Route (first run, route set v1)</th><th>Group</th><th>True V28</th><th>A8</th><th>A8 vs V28 ∫F²ds</th></tr></thead>
           <tbody><tr><td>vmr0050_lva</td><td>Vertebrobasilar</td><td>audit clip planes incompatible</td><td>audit clip planes incompatible</td><td>–</td></tr><tr><td>vmr0050_rva</td><td>Vertebrobasilar</td><td>whole rod sample penetration at 117/300 mm</td><td>whole rod sample penetration at 134/300 mm</td><td>–</td></tr><tr><td>vmr0051_lva</td><td>Vertebrobasilar</td><td>audit clip planes incompatible</td><td>audit clip planes incompatible</td><td>–</td></tr><tr><td>vmr0051_rva</td><td>Vertebrobasilar</td><td>success</td><td>success</td><td>−39.5%</td></tr><tr><td>vmr0052_lva</td><td>Vertebrobasilar</td><td>whole rod sample penetration at 19/223 mm</td><td>whole rod sample penetration at 21/223 mm</td><td>–</td></tr><tr><td>vmr0052_rva</td><td>Vertebrobasilar</td><td>success</td><td>success</td><td>−40.1%</td></tr><tr><td>vmr0053_rva</td><td>Vertebrobasilar</td><td>wall penetration at 113/246 mm</td><td>wall penetration at 113/246 mm</td><td>–</td></tr><tr><td>vmr0248_bct_rcca</td><td>Aortic arch</td><td>wall penetration at 158/280 mm</td><td>wall penetration at 204/280 mm</td><td>–</td></tr><tr><td>vmr0248_lcca_leca</td><td>Aortic arch</td><td>wall penetration at 153/279 mm</td><td>wall penetration at 153/279 mm</td><td>–</td></tr><tr><td>vmr0248_lcca_lica</td><td>Aortic arch</td><td>wall penetration at 153/312 mm</td><td>wall penetration at 153/312 mm</td><td>–</td></tr><tr><td>vmr0248_lsa_lva</td><td>Aortic arch</td><td>wire looped in the arch; stopped at full insertion</td><td>wall penetration at 184/233 mm</td><td>–</td></tr><tr><td>vmr0248_rcca_reca</td><td>Aortic arch</td><td>wall penetration at 157/312 mm</td><td>wall penetration at 202/312 mm</td><td>–</td></tr><tr><td>vmr0248_rsa_rva</td><td>Aortic arch</td><td>wall penetration at 162/295 mm</td><td>wall penetration at 167/295 mm</td><td>–</td></tr></tbody>
         </table>
-        <p class="muted">Both controllers fail on the same routes in the same way, so these are route or contract problems, not controller differences. In the aortic arch the run stops on the −0.1 mm penetration guard at low head force (about 5–13 mN) near the arch apex and branch ostia; this has not been diagnosed and is not a physical conclusion. Some vertebral lumens are barely wider than the 1 mm wire, and two routes turn back toward their own lead-in, which the audit's clip planes do not support. On the two routes that complete, A8 lowers head ∫F²ds by about 40% at 1.5× time. A revised route set is planned.</p>
+        <p>Both controllers failed on the same routes in the same way, so we diagnosed the runs from the saved 6 ms rod states rather than the controllers:</p>
+        <ul class="clean">
+          <li><strong>Aortic arch and one vertebral route — a sign-rule artefact.</strong> The head-clearance guard signed the wall distance by the direction toward the route centreline. That is exact in a round tube, but in the arch and at branch ostia the wall normal deviates 22–68° from that direction. At every stop the exact distance was +0.02 … +0.5 mm and a generalised winding number confirmed the head was inside the lumen, while the guard read −0.06 … −0.15 mm. The SOFA contact itself never penetrated.</li>
+          <li><strong>Two vertebral routes — our lead-in construction.</strong> Cutting the inlet by whole triangles left a jagged loop, and the extruded lead-in had folds (adjacent normals up to 171°) where a one-face normal sign flips.</li>
+          <li><strong>Two routes — audit planes.</strong> Their final direction turned back toward the inlet, so the audit's outlet half-space clipped the deployed wire.</li>
+          <li>One genuine failure: V28 looped the wire in the arch on the subclavian–vertebral route.</li>
+        </ul>
+        <p>Route set v2 cuts the inlet with an exact plane (clean lead-ins, folds ≤ 17°), trims route ends so the audit half-spaces never clip the wire, and runs with an exact signed clearance (closest-feature pseudo-normals on the same full-mesh BVH; identical to first order in round tubes). Smoke runs of V28 on the three failing route types now pass their old stopping points with clean audits: a vertebral route advances 154 mm (stopped at 113 mm before), a narrow vertebral lead-in is traversed, and in the aortic arch the wire is no longer stopped — but after 150 mm its tip leaves the route: V28 does not enter the left common carotid ostium. Branch selection in the arch is a real navigation problem at 20 mT, and it is what the full v2 evaluation will measure.</p>
       </div>
     </section>
 
