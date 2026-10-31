@@ -32,7 +32,7 @@
 
   <main id="top">
     <div class="wrap hero">
-      <p class="kicker">magic-guidewire.github.io · synced from the experiment records · 2026-10-31 19:26 UTC</p>
+      <p class="kicker">magic-guidewire.github.io · synced from the experiment records · 2026-10-31 20:21 UTC</p>
       <h1>MAGIC</h1>
       <p class="expansion">Magnetic Actuation for Guidewire Intelligent Control</p>
       <ul class="status">
@@ -51,7 +51,7 @@
         <div class="grid-2">
           <div>
             <p><strong>M3e · look-ahead field-lead residual</strong> <span class="muted">(m3e_fieldlead_learning_20261031a)</span> — state <em>running</em>, stage <em>bayesian_policy_search</em>.</p>
-            <p>Full passages in this experiment: <strong>182</strong> finished, <strong>0</strong> failed, <strong>6</strong> running (six run in parallel on CPU). Policy evaluations scored: <strong>3</strong>.</p>
+            <p>Full passages in this experiment: <strong>192</strong> finished, <strong>0</strong> failed, <strong>6</strong> running (six run in parallel on CPU). Policy evaluations scored: <strong>6</strong>.</p>
             <p class="muted">Best design meeting every hard constraint so far: <strong>eval003</strong>. Against same-speed V28 on the 32 training vessels: head ∫F²ds −9.3% (worst vessel −1.7%), tip acceleration −17.4%, mean time −1.44%, tip-speed std +44%.</p>
             <p class="muted">Adopted controller (passed its development gate and an independent raw audit): <strong>A8 eval005</strong>. Interrupted runs (machine restarts, app updates) are archived untouched and re-run from scratch; they are never counted.</p>
           </div>
@@ -269,11 +269,14 @@
 <g class="pt"><title>eval001: head ∫F²ds −9.0%, tip acceleration −16.5%, mean time −1.44% (worst vessel +4.0%), speed std +43% · meets all hard constraints</title><circle cx="163.8" cy="120.6" r="11" fill="transparent"/><circle cx="163.8" cy="120.6" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
 <g class="pt"><title>eval002: head ∫F²ds −6.9%, tip acceleration −20.9%, mean time −1.42% (worst vessel +3.9%), speed std +41% · meets all hard constraints</title><circle cx="163.9" cy="105.3" r="11" fill="transparent"/><circle cx="163.9" cy="105.3" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
 <g class="pt"><title>eval003: head ∫F²ds −9.3%, tip acceleration −17.4%, mean time −1.44% (worst vessel +4.0%), speed std +44% · meets all hard constraints</title><circle cx="163.8" cy="122.9" r="11" fill="transparent"/><circle cx="163.8" cy="122.9" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>eval004: head ∫F²ds −9.3%, tip acceleration −17.1%, mean time −1.44% (worst vessel +4.0%), speed std +43% · meets all hard constraints</title><circle cx="163.8" cy="122.5" r="11" fill="transparent"/><circle cx="163.8" cy="122.5" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>eval005: head ∫F²ds −9.4%, tip acceleration −15.4%, mean time −1.44% (worst vessel +4.0%), speed std +44% · meets all hard constraints</title><circle cx="163.7" cy="123.4" r="11" fill="transparent"/><circle cx="163.7" cy="123.4" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>eval006: head ∫F²ds −9.9%, tip acceleration −24.0%, mean time −1.46% (worst vessel +3.9%), speed std +45% · violates a hard constraint</title><circle cx="163.5" cy="127.2" r="11" fill="transparent"/><circle cx="163.5" cy="127.2" r="4.5" fill="#141414" stroke="#d95926" stroke-width="2"/></g>
 <text x="172.8" y="126.9" text-anchor="start" class="note">eval003 · best feasible</text>
 <text x="297" y="390" text-anchor="middle" class="lab">Mean passage-time change vs same-speed V28</text>
 <text transform="translate(16 183) rotate(-90)" text-anchor="middle" class="lab">Mean head ∫F²ds change</text>
 </svg>
-            <figcaption><strong>Figure 4.</strong> The 3 scored feed policies of the current search on the 32 training vessels, against same-speed V28. Filled: meets every hard constraint; ring: violates one. The shaded band is the mean-time limit. Hover a point for all metrics.</figcaption>
+            <figcaption><strong>Figure 4.</strong> The 6 scored feed policies of the current search on the 32 training vessels, against same-speed V28. Filled: meets every hard constraint; ring: violates one. The shaded band is the mean-time limit. Hover a point for all metrics.</figcaption>
           </figure>
           <div class="callout">
             <h3>Time-matched scoring (M3d) and field lead (M3e)</h3>
