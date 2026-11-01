@@ -33,14 +33,14 @@
 
   <main id="top">
     <div class="wrap hero">
-      <p class="kicker">magic-guidewire.github.io · synced from the experiment records · 2026-11-01 22:21 UTC</p>
+      <p class="kicker">magic-guidewire.github.io · synced from the experiment records · 2026-11-01 23:27 UTC</p>
       <h1>MAGIC</h1>
       <p class="expansion">Magnetic Actuation for Guidewire Intelligent Control</p>
       <ul class="status">
         <li><strong>Simulation only</strong> · rigid walls, uncalibrated damping</li>
         <li>Proximal feed <strong>≤ 5 mm/s</strong> · slow-down only</li>
         <li>Field <strong>≤ 20 mT</strong> · 0.03 T/s</li>
-        <li>Now: <strong>B2 · branch-entry learning</strong></li>
+        <li>Now: <strong>B2b · branch-entry learning, corrected push cap</strong></li>
       </ul>
       <p class="lead">We push a 400 mm magnetic guidewire through complete 3D lumens in SOFA. A fixed geometric steering controller (V28) points the magnetic head with an external field. On top of it we learn a low-dimensional policy that may only <em>slow</em> the proximal feed and retune the steering gains. The aim is a smooth, unobstructed passage: fewer head–wall collisions, lower head contact force and steadier tip motion, in a reasonable time. Numbers on this page come from checked full-passage runs; unless stated they are training or development results, not a held-out test.</p>
     </div>
@@ -51,14 +51,14 @@
         <h2>What is running now.</h2>
         <div class="grid-2">
           <div>
-            <p><strong>B2 · branch-entry learning</strong> <span class="muted">(b2_branch_learning_20261101a)</span> — state <em>running</em>, stage <em>bayesian_search</em>.</p>
-            <p>Full passages in this experiment: <strong>114</strong> finished, <strong>0</strong> failed, <strong>4</strong> running (six run in parallel on CPU). Policy evaluations scored: <strong>3</strong>.</p>
-            <p class="muted">No design has met every hard constraint yet.</p>
+            <p><strong>B2b · branch-entry learning, corrected push cap</strong> <span class="muted">(b3_branch_pushcap_20261102a)</span> — state <em>prepared</em>, stage <em>smoke</em>.</p>
+            <p>Full passages in this experiment: <strong>1</strong> finished, <strong>0</strong> failed, <strong>0</strong> running (six run in parallel on CPU). Policy evaluations scored: <strong>0</strong>.</p>
+            <p class="muted">Best design meeting every hard constraint so far: <strong>eval002</strong>. Against same-speed V28 on the 32 training vessels: head ∫F²ds −10.6% (worst vessel −0.8%), tip acceleration −12.2%, mean time +0.22%, tip-speed std +118%.</p>
             <p class="muted">Adopted controller (passed its development gate and an independent raw audit): <strong>Single-tube: M3e eval008</strong>. Interrupted runs (machine restarts, app updates) are archived untouched and re-run from scratch; they are never counted.</p>
           </div>
           <div class="callout">
             <h3>Roadmap</h3>
-            <table class="roadmap"><tbody><tr><td>M1</td><td>Same-speed control</td><td><span class="state done">✓ done</span></td><td class="left">2026-10-28 · learned gains add no measurable benefit at equal feed</td></tr><tr><td>M2</td><td>Generalization: 48 unseen synthetic + 13 patient-derived routes</td><td><span class="state done">✓ done</span></td><td class="left">2026-10-28 · slow-down gain holds on 48/48 synthetic vessels</td></tr><tr><td>M3</td><td>Equal-time feed and field-lead learning on single tubes</td><td><span class="state done">✓ done</span></td><td class="left">2026-11-01 · equal-time gain small on development vessels (−2.9% head ∫F²ds); stopped for the pivot</td></tr><tr><td>B0</td><td>Patient-derived aortic-arch cohort</td><td><span class="state done">✓ done</span></td><td class="left">2026-11-01 · 155 fixed routes from 54 patients (VMR), split by patient</td></tr><tr><td>B1</td><td>Branch-selection survey</td><td><span class="state done">✓ done</span></td><td class="left">12 training routes, full passages: slowed feed + look-ahead field lead (40 mT eq.) reached the target in 7/12; V28 at 40 and 60 mT eq. 4/12 each; V28 at 20 mT 0/12 (6 entered a wrong vessel). All successful runs had zero significant collisions. Long right-carotid routes stalled at the branch ostium under every condition</td></tr><tr><td>B2</td><td>Learn branch entry</td><td><span class="state running">● running</span></td><td class="left">equivalent field (25-80 mT) and look-ahead field lead learned by Bayesian optimization on 24 training-patient routes; success first, then head collisions and load</td></tr><tr><td>B3</td><td>Held-out patients, ablations, robustness</td><td><span class="state planned">planned</span></td><td class="left">15 test patients used once the method is frozen</td></tr><tr><td>B4</td><td>Paper assets</td><td><span class="state planned">planned</span></td><td class="left">figures, trajectories, videos</td></tr></tbody></table>
+            <table class="roadmap"><tbody><tr><td>M1</td><td>Same-speed control</td><td><span class="state done">✓ done</span></td><td class="left">2026-10-28 · learned gains add no measurable benefit at equal feed</td></tr><tr><td>M2</td><td>Generalization: 48 unseen synthetic + 13 patient-derived routes</td><td><span class="state done">✓ done</span></td><td class="left">2026-10-28 · slow-down gain holds on 48/48 synthetic vessels</td></tr><tr><td>M3</td><td>Equal-time feed and field-lead learning on single tubes</td><td><span class="state done">✓ done</span></td><td class="left">2026-11-01 · equal-time gain small on development vessels (−2.9% head ∫F²ds); stopped for the pivot</td></tr><tr><td>B0</td><td>Patient-derived aortic-arch cohort</td><td><span class="state done">✓ done</span></td><td class="left">2026-11-01 · 155 fixed routes from 54 patients (VMR), split by patient</td></tr><tr><td>B1</td><td>Branch-selection survey</td><td><span class="state done">✓ done</span></td><td class="left">12 training routes, full passages: slowed feed + look-ahead field lead (40 mT eq.) reached the target in 7/12; V28 at 40 and 60 mT eq. 4/12 each; V28 at 20 mT 0/12 (6 entered a wrong vessel). All successful runs had zero significant collisions. Long right-carotid routes stalled at the branch ostium under every condition</td></tr><tr><td>B2</td><td>Learn branch entry</td><td><span class="state done">✓ done</span></td><td class="left">equivalent field (25-80 mT) and look-ahead field lead learned by Bayesian optimization on 24 training-patient routes. Best prior point (60 mT eq.) reached the target on 19/24 with zero significant collisions; the six evaluated settings failed on the same 5 routes. Correction: 4 of these 5 stopped at a convenience push cap of route length + 20 mm (tip at 95-97% of the route), not at the end of the wire; stopped and re-run as B2b</td></tr><tr><td>B2b</td><td>Branch entry with corrected push cap</td><td><span class="state running">● running</span></td><td class="left">push cap raised to route length + 120 mm (wire exhaustion decided by the simulator); unaffected B2 passages reused (bitwise-identical trajectories checked), capped ones re-run, then the search continues; 12 test-patient routes re-evaluated without selection</td></tr><tr><td>B3</td><td>Held-out patients, ablations, robustness</td><td><span class="state planned">planned</span></td><td class="left">15 test patients used once the method is frozen</td></tr><tr><td>B4</td><td>Paper assets</td><td><span class="state planned">planned</span></td><td class="left">figures, trajectories, videos</td></tr></tbody></table>
           </div>
         </div>
       </div>
@@ -239,12 +239,65 @@
         <div class="grid-3">
           <article class="card"><h3>M3 · absolute load feedback</h3><p>Slow down when filtered head load exceeds a fixed 8 mN reference. On the 24 new, low-load vessels the feed saturated at 5 mm/s: time −28 … −33%, head ∫F²ds +53 … +144%. A fixed reference cannot fit vessels of different load levels. Stopped.</p></article>
           <article class="card"><h3>M3b · relative load feedback</h3><p>Compare fast and slow low-passes of the same vessel's head load: slow down above the vessel's own recent level, catch up below it. Head ∫F²ds −19 … −20% on every vessel at equal mean time, but the feed changed too abruptly: worst-vessel tip acceleration +56 … +80%. Stopped.</p></article>
-          <article class="card"><h3>M3c · rate-limited</h3><p>Same law with a limit on how fast the feed may change, and smoothness in the objective. No design meets every constraint yet. On the 6 development vessels (not used for selection) eval002 succeeded 6/6 with no significant collision and cut head ∫F²ds on every vessel against same-speed V28 (−9 … −19%), but it was also 4 … 7% slower there, so this is not yet an equal-time win. Stopped in favour of M3d.</p></article>
+          <article class="card"><h3>M3c · rate-limited</h3><p>Same law with a limit on how fast the feed may change, and smoothness in the objective. First design meeting every constraint: eval002, head ∫F²ds −10.6%, tip acceleration −12.2%, mean time +0.22%. Its tip-speed std rose +118% — the feed is deliberately non-uniform. On the 6 development vessels (not used for selection) eval002 succeeded 6/6 with no significant collision and cut head ∫F²ds on every vessel against same-speed V28 (−9 … −19%), but it was also 4 … 7% slower there, so this is not yet an equal-time win. Stopped in favour of M3d.</p></article>
         </div>
         <div class="grid-2" style="margin-top:18px">
           <figure class="chart">
-            
-            <figcaption><strong>Figure 4.</strong> The 0 scored feed policies of the current search on the 32 training vessels, against same-speed V28. Filled: meets every hard constraint; ring: violates one. The shaded band is the mean-time limit. Hover a point for all metrics.</figcaption>
+            <div class="legend"><span><i class="dot" style="background:#3987e5"></i>meets all hard constraints</span><span><i class="ring" style="border-color:#d95926"></i>violates a hard constraint</span></div><svg viewBox="0 0 560 400" role="img" aria-label="Feed-policy evaluations: passage time versus head force, relative to same-speed V28">
+<rect x="64" y="18" width="128.2" height="330" fill="#3987e5" opacity="0.10"/>
+<text x="70" y="340" class="note">mean time ≤ +1% (hard limit)</text>
+<line x1="64" x2="530" y1="348.0" y2="348.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="352.0" text−anchor="end" class="tick">−40%</text>
+<line x1="64" x2="530" y1="311.3" y2="311.3" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="315.3" text−anchor="end" class="tick">−35%</text>
+<line x1="64" x2="530" y1="274.7" y2="274.7" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="278.7" text−anchor="end" class="tick">−30%</text>
+<line x1="64" x2="530" y1="238.0" y2="238.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="242.0" text−anchor="end" class="tick">−25%</text>
+<line x1="64" x2="530" y1="201.3" y2="201.3" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="205.3" text−anchor="end" class="tick">−20%</text>
+<line x1="64" x2="530" y1="164.7" y2="164.7" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="168.7" text−anchor="end" class="tick">−15%</text>
+<line x1="64" x2="530" y1="128.0" y2="128.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="132.0" text−anchor="end" class="tick">−10%</text>
+<line x1="64" x2="530" y1="91.3" y2="91.3" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="95.3" text−anchor="end" class="tick">−5%</text>
+<line x1="64" x2="530" y1="54.7" y2="54.7" stroke="#383835" stroke-width="1"/>
+<text x="56" y="58.7" text−anchor="end" class="tick">0%</text>
+<line x1="64" x2="530" y1="18.0" y2="18.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="56" y="22.0" text−anchor="end" class="tick">+5%</text>
+<line y1="18" y2="348" x1="64.0" x2="64.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="64.0" y="366" text−anchor="middle" class="tick">−10%</text>
+<line y1="18" y2="348" x1="122.2" x2="122.2" stroke="#2c2c2a" stroke-width="1"/>
+<text x="122.2" y="366" text−anchor="middle" class="tick">−5%</text>
+<line y1="18" y2="348" x1="180.5" x2="180.5" stroke="#383835" stroke-width="1"/>
+<text x="180.5" y="366" text−anchor="middle" class="tick">0%</text>
+<line y1="18" y2="348" x1="238.8" x2="238.8" stroke="#2c2c2a" stroke-width="1"/>
+<text x="238.8" y="366" text−anchor="middle" class="tick">+5%</text>
+<line y1="18" y2="348" x1="297.0" x2="297.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="297.0" y="366" text−anchor="middle" class="tick">+10%</text>
+<line y1="18" y2="348" x1="355.2" x2="355.2" stroke="#2c2c2a" stroke-width="1"/>
+<text x="355.2" y="366" text−anchor="middle" class="tick">+15%</text>
+<line y1="18" y2="348" x1="413.5" x2="413.5" stroke="#2c2c2a" stroke-width="1"/>
+<text x="413.5" y="366" text−anchor="middle" class="tick">+20%</text>
+<line y1="18" y2="348" x1="471.8" x2="471.8" stroke="#2c2c2a" stroke-width="1"/>
+<text x="471.8" y="366" text−anchor="middle" class="tick">+25%</text>
+<line y1="18" y2="348" x1="530.0" x2="530.0" stroke="#2c2c2a" stroke-width="1"/>
+<text x="530.0" y="366" text−anchor="middle" class="tick">+30%</text>
+<g class="pt"><title>eval001: head ∫F²ds −4.6%, tip acceleration −5.6%, mean time −2.08% (worst vessel +8.2%), speed std +225% · violates a hard constraint</title><circle cx="156.3" cy="88.1" r="11" fill="transparent"/><circle cx="156.3" cy="88.1" r="4.5" fill="#141414" stroke="#d95926" stroke-width="2"/></g>
+<g class="pt"><title>eval002: head ∫F²ds −10.6%, tip acceleration −12.2%, mean time +0.22% (worst vessel +8.8%), speed std +118% · meets all hard constraints</title><circle cx="183.1" cy="132.4" r="11" fill="transparent"/><circle cx="183.1" cy="132.4" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>eval003: head ∫F²ds −29.9%, tip acceleration −14.4%, mean time +24.94% (worst vessel +52.0%), speed std +226% · violates a hard constraint</title><circle cx="471.1" cy="274.0" r="11" fill="transparent"/><circle cx="471.1" cy="274.0" r="4.5" fill="#141414" stroke="#d95926" stroke-width="2"/></g>
+<g class="pt"><title>eval004: head ∫F²ds −9.5%, tip acceleration −13.0%, mean time −0.20% (worst vessel +10.4%), speed std +148% · meets all hard constraints</title><circle cx="178.2" cy="124.2" r="11" fill="transparent"/><circle cx="178.2" cy="124.2" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>eval005: head ∫F²ds −15.2%, tip acceleration −8.5%, mean time +4.37% (worst vessel +10.0%), speed std +43% · violates a hard constraint</title><circle cx="231.4" cy="166.4" r="11" fill="transparent"/><circle cx="231.4" cy="166.4" r="4.5" fill="#141414" stroke="#d95926" stroke-width="2"/></g>
+<g class="pt"><title>eval006: head ∫F²ds −7.6%, tip acceleration −4.4%, mean time +1.84% (worst vessel +4.8%), speed std +14% · violates a hard constraint</title><circle cx="202.0" cy="110.7" r="11" fill="transparent"/><circle cx="202.0" cy="110.7" r="4.5" fill="#141414" stroke="#d95926" stroke-width="2"/></g>
+<g class="pt"><title>eval007: head ∫F²ds −6.1%, tip acceleration −8.4%, mean time −1.44% (worst vessel +4.0%), speed std +44% · meets all hard constraints</title><circle cx="163.8" cy="99.7" r="11" fill="transparent"/><circle cx="163.8" cy="99.7" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>eval008: head ∫F²ds −10.9%, tip acceleration −5.3%, mean time +3.70% (worst vessel +6.2%), speed std +17% · violates a hard constraint</title><circle cx="223.6" cy="134.6" r="11" fill="transparent"/><circle cx="223.6" cy="134.6" r="4.5" fill="#141414" stroke="#d95926" stroke-width="2"/></g>
+<text x="192.1" y="136.4" text-anchor="start" class="note">eval002 · best feasible</text>
+<text x="462.1" y="278.0" text-anchor="end" class="note">eval003 · too slow</text>
+<text x="297" y="390" text-anchor="middle" class="lab">Mean passage-time change vs same-speed V28</text>
+<text transform="translate(16 183) rotate(-90)" text-anchor="middle" class="lab">Mean head ∫F²ds change</text>
+</svg>
+            <figcaption><strong>Figure 4.</strong> The 8 scored feed policies of the current search on the 32 training vessels, against same-speed V28. Filled: meets every hard constraint; ring: violates one. The shaded band is the mean-time limit. Hover a point for all metrics.</figcaption>
           </figure>
           <div class="callout">
             <h3>Time-matched scoring (M3d) and field lead (M3e)</h3>
