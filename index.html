@@ -32,7 +32,7 @@
 
   <main id="top">
     <div class="wrap hero">
-      <p class="kicker">magic-guidewire.github.io · synced from the experiment records · 2026-11-01 03:24 UTC</p>
+      <p class="kicker">magic-guidewire.github.io · synced from the experiment records · 2026-11-01 04:27 UTC</p>
       <h1>MAGIC</h1>
       <p class="expansion">Magnetic Actuation for Guidewire Intelligent Control</p>
       <ul class="status">
@@ -50,9 +50,9 @@
         <h2>What is running now.</h2>
         <div class="grid-2">
           <div>
-            <p><strong>M3e · look-ahead field-lead residual</strong> <span class="muted">(m3e_fieldlead_learning_20261031a)</span> — state <em>running</em>, stage <em>bayesian_policy_search</em>.</p>
-            <p>Full passages in this experiment: <strong>274</strong> finished, <strong>0</strong> failed, <strong>6</strong> running (six run in parallel on CPU). Policy evaluations scored: <strong>6</strong>.</p>
-            <p class="muted">Best design meeting every hard constraint so far: <strong>eval003</strong>. Against same-speed V28 on the 32 training vessels: head ∫F²ds −9.3% (worst vessel −1.7%), tip acceleration −17.4%, mean time −1.44%, tip-speed std +44%.</p>
+            <p><strong>M3e · look-ahead field-lead residual</strong> <span class="muted">(m3e_fieldlead_learning_20261031a)</span> — state <em>running</em>, stage <em>checkpoint_009</em>.</p>
+            <p>Full passages in this experiment: <strong>288</strong> finished, <strong>0</strong> failed, <strong>6</strong> running (six run in parallel on CPU). Policy evaluations scored: <strong>9</strong>.</p>
+            <p class="muted">Best design meeting every hard constraint so far: <strong>eval008</strong>. Against same-speed V28 on the 32 training vessels: head ∫F²ds −9.0% (worst vessel −1.6%), tip acceleration −20.0%, mean time −1.44%, tip-speed std +43%.</p>
             <p class="muted">Adopted controller (passed its development gate and an independent raw audit): <strong>A8 eval005</strong>. Interrupted runs (machine restarts, app updates) are archived untouched and re-run from scratch; they are never counted.</p>
           </div>
           <div class="callout">
@@ -221,7 +221,7 @@
         <div class="grid-3">
           <article class="card"><h3>M3 · absolute load feedback</h3><p>Slow down when filtered head load exceeds a fixed 8 mN reference. On the 24 new, low-load vessels the feed saturated at 5 mm/s: time −28 … −33%, head ∫F²ds +53 … +144%. A fixed reference cannot fit vessels of different load levels. Stopped.</p></article>
           <article class="card"><h3>M3b · relative load feedback</h3><p>Compare fast and slow low-passes of the same vessel's head load: slow down above the vessel's own recent level, catch up below it. Head ∫F²ds −19 … −20% on every vessel at equal mean time, but the feed changed too abruptly: worst-vessel tip acceleration +56 … +80%. Stopped.</p></article>
-          <article class="card"><h3>M3c · rate-limited</h3><p>Same law with a limit on how fast the feed may change, and smoothness in the objective. First design meeting every constraint: eval003, head ∫F²ds −9.3%, tip acceleration −17.4%, mean time −1.44%. Its tip-speed std rose +44% — the feed is deliberately non-uniform. On the 6 development vessels (not used for selection) eval002 succeeded 6/6 with no significant collision and cut head ∫F²ds on every vessel against same-speed V28 (−9 … −19%), but it was also 4 … 7% slower there, so this is not yet an equal-time win. Stopped in favour of M3d.</p></article>
+          <article class="card"><h3>M3c · rate-limited</h3><p>Same law with a limit on how fast the feed may change, and smoothness in the objective. First design meeting every constraint: eval008, head ∫F²ds −9.0%, tip acceleration −20.0%, mean time −1.44%. Its tip-speed std rose +43% — the feed is deliberately non-uniform. On the 6 development vessels (not used for selection) eval002 succeeded 6/6 with no significant collision and cut head ∫F²ds on every vessel against same-speed V28 (−9 … −19%), but it was also 4 … 7% slower there, so this is not yet an equal-time win. Stopped in favour of M3d.</p></article>
         </div>
         <div class="grid-2" style="margin-top:18px">
           <figure class="chart">
@@ -272,11 +272,14 @@
 <g class="pt"><title>eval004: head ∫F²ds −9.3%, tip acceleration −17.1%, mean time −1.44% (worst vessel +4.0%), speed std +43% · meets all hard constraints</title><circle cx="163.8" cy="122.5" r="11" fill="transparent"/><circle cx="163.8" cy="122.5" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
 <g class="pt"><title>eval005: head ∫F²ds −9.4%, tip acceleration −15.4%, mean time −1.44% (worst vessel +4.0%), speed std +44% · meets all hard constraints</title><circle cx="163.7" cy="123.4" r="11" fill="transparent"/><circle cx="163.7" cy="123.4" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
 <g class="pt"><title>eval006: head ∫F²ds −9.9%, tip acceleration −24.0%, mean time −1.46% (worst vessel +3.9%), speed std +45% · violates a hard constraint</title><circle cx="163.5" cy="127.2" r="11" fill="transparent"/><circle cx="163.5" cy="127.2" r="4.5" fill="#141414" stroke="#d95926" stroke-width="2"/></g>
-<text x="172.8" y="126.9" text-anchor="start" class="note">eval003 · best feasible</text>
+<g class="pt"><title>eval007: head ∫F²ds −8.9%, tip acceleration −22.8%, mean time −1.44% (worst vessel +4.0%), speed std +44% · meets all hard constraints</title><circle cx="163.7" cy="120.2" r="11" fill="transparent"/><circle cx="163.7" cy="120.2" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>eval008: head ∫F²ds −9.0%, tip acceleration −20.0%, mean time −1.44% (worst vessel +4.0%), speed std +43% · meets all hard constraints</title><circle cx="163.7" cy="120.6" r="11" fill="transparent"/><circle cx="163.7" cy="120.6" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<g class="pt"><title>eval009: head ∫F²ds −9.6%, tip acceleration −21.5%, mean time −1.45% (worst vessel +4.0%), speed std +44% · meets all hard constraints</title><circle cx="163.6" cy="124.9" r="11" fill="transparent"/><circle cx="163.6" cy="124.9" r="5" fill="#3987e5" stroke="#141414" stroke-width="2"/></g>
+<text x="172.7" y="124.6" text-anchor="start" class="note">eval008 · best feasible</text>
 <text x="297" y="390" text-anchor="middle" class="lab">Mean passage-time change vs same-speed V28</text>
 <text transform="translate(16 183) rotate(-90)" text-anchor="middle" class="lab">Mean head ∫F²ds change</text>
 </svg>
-            <figcaption><strong>Figure 4.</strong> The 6 scored feed policies of the current search on the 32 training vessels, against same-speed V28. Filled: meets every hard constraint; ring: violates one. The shaded band is the mean-time limit. Hover a point for all metrics.</figcaption>
+            <figcaption><strong>Figure 4.</strong> The 9 scored feed policies of the current search on the 32 training vessels, against same-speed V28. Filled: meets every hard constraint; ring: violates one. The shaded band is the mean-time limit. Hover a point for all metrics.</figcaption>
           </figure>
           <div class="callout">
             <h3>Time-matched scoring (M3d) and field lead (M3e)</h3>
