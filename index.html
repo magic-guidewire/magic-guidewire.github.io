@@ -83,7 +83,7 @@
       <thead><tr><th class="left">Tip progress measurement</th><th>Reached</th><th>Passage time</th></tr></thead>
       <tbody><tr><td class="left">Exact tip progress</td><td>23/24</td><td>0.82×</td></tr><tr><td class="left">Gaussian noise, σ = 1 mm</td><td>23/24</td><td>0.82×</td></tr><tr><td class="left">Gaussian noise, σ = 2 mm, plus 0.3 s delay</td><td>23/24</td><td>0.84×</td></tr></tbody>
     </table></div>
-    
+    <h3>Physical-parameter changes</h3><p>Wire stiffness and field strength were changed without retraining the load model or retuning the controller. Ratios are paired medians on routes both controllers reached.</p><div class="tablewrap"><table><thead><tr><th>Change</th><th>Reached (ours)</th><th>Reached (slack feedback)</th><th>Time vs slack feedback</th><th>Peak wall load vs slack feedback</th></tr></thead><tbody><tr><td>Wire stiffness −30%</td><td>24/24</td><td>23/24</td><td>1.03×</td><td>0.87× <span class="muted">(p = 3.15e-05)</span></td></tr><tr><td>Wire stiffness +30%</td><td>24/24</td><td>24/24</td><td>1.03×</td><td>0.76× <span class="muted">(p = 9.06e-06)</span></td></tr><tr><td>Field 60 mT</td><td>24/24</td><td>23/24</td><td>1.03×</td><td>0.87× <span class="muted">(p = 2.38e-06)</span></td></tr></tbody></table></div>
   </section>
 </main>
 
